@@ -9,12 +9,16 @@ public class SimpleNPCsIntegrator implements Integrator {
 
     private final BetonQuest plugin;
 
+    private SimpleNPCsListener simpleNPCsListener;
+
     public SimpleNPCsIntegrator() {
         plugin = BetonQuest.getInstance();
     }
 
     @Override
     public void hook() throws HookException {
+        simpleNPCsListener = new SimpleNPCsListener();
+
         plugin.registerVariable("citizens", SimpleNPCsVariable.class);
         plugin.registerObjectives("npcinteract", NPCInteractObjective.class);
     }

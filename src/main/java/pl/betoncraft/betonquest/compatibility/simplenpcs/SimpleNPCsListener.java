@@ -111,8 +111,7 @@ public class SimpleNPCsListener implements Listener {
         }
         if (assignment != null) {
             event.setCancelled(true);
-            new SimpleNPCsConversation(playerID, assignment, event.getNPC().getLocation(),
-                    event.getNPC());
+            new SimpleNPCsConversation(playerID, assignment, event.getNPC().getLocation(), event.getNPC());
         }
     }
 }

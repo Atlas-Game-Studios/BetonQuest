@@ -58,7 +58,7 @@ public class Compatibility implements Listener {
         instance = this;
 
         integrators.put("MythicMobs", new MythicMobsIntegrator());
-        integrators.put("Citizens", new CitizensIntegrator());
+        //integrators.put("Citizens", new CitizensIntegrator());
         integrators.put("SimpleNPCs", new SimpleNPCsIntegrator());
         integrators.put("Vault", new VaultIntegrator());
         integrators.put("Skript", new SkriptIntegrator());
