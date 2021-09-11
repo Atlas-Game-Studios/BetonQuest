@@ -17,7 +17,7 @@ import pl.betoncraft.betonquest.compatibility.holographicdisplays.HolographicDis
 import pl.betoncraft.betonquest.compatibility.jobsreborn.JobsRebornIntegrator;
 import pl.betoncraft.betonquest.compatibility.magic.MagicIntegrator;
 import pl.betoncraft.betonquest.compatibility.mcmmo.McMMOIntegrator;
-import pl.betoncraft.betonquest.compatibility.mmogroup.mmocore.MMOCoreIntegrator;
+//import pl.betoncraft.betonquest.compatibility.mmogroup.mmocore.MMOCoreIntegrator;
 import pl.betoncraft.betonquest.compatibility.mmogroup.mmoitems.MMOItemsIntegrator;
 import pl.betoncraft.betonquest.compatibility.mmogroup.mmolib.MMOLibIntegrator;
 import pl.betoncraft.betonquest.compatibility.mythicmobs.MythicMobsIntegrator;
@@ -25,6 +25,7 @@ import pl.betoncraft.betonquest.compatibility.placeholderapi.PlaceholderAPIInteg
 import pl.betoncraft.betonquest.compatibility.protocollib.ProtocolLibIntegrator;
 import pl.betoncraft.betonquest.compatibility.quests.QuestsIntegrator;
 import pl.betoncraft.betonquest.compatibility.shopkeepers.ShopkeepersIntegrator;
+import pl.betoncraft.betonquest.compatibility.simplenpcs.SimpleNPCsIntegrator;
 import pl.betoncraft.betonquest.compatibility.skillapi.SkillAPIIntegrator;
 import pl.betoncraft.betonquest.compatibility.skript.SkriptIntegrator;
 import pl.betoncraft.betonquest.compatibility.vault.VaultIntegrator;
@@ -58,6 +59,7 @@ public class Compatibility implements Listener {
 
         integrators.put("MythicMobs", new MythicMobsIntegrator());
         integrators.put("Citizens", new CitizensIntegrator());
+        integrators.put("SimpleNPCs", new SimpleNPCsIntegrator());
         integrators.put("Vault", new VaultIntegrator());
         integrators.put("Skript", new SkriptIntegrator());
         integrators.put("WorldGuard", new WorldGuardIntegrator());
@@ -65,7 +67,7 @@ public class Compatibility implements Listener {
         integrators.put("FastAsyncWorldEdit", new WorldEditIntegrator());
         integrators.put("mcMMO", new McMMOIntegrator());
         integrators.put("MMOLib", new MMOLibIntegrator());
-        integrators.put("MMOCore", new MMOCoreIntegrator());
+        //integrators.put("MMOCore", new MMOCoreIntegrator());
         integrators.put("MMOItems", new MMOItemsIntegrator());
         integrators.put("EffectLib", new EffectLibIntegrator());
         integrators.put("Heroes", new HeroesIntegrator());

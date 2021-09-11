@@ -1,5 +1,6 @@
 package pl.betoncraft.betonquest;
 
+import com.ags.simplenpcs.api.SimpleNPCService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.papermc.lib.PaperLib;
 import org.apache.logging.log4j.LogManager;
@@ -1098,6 +1099,10 @@ public class BetonQuest extends JavaPlugin {
 
         // done
         LogUtils.getLogger().log(Level.INFO, "BetonQuest succesfully disabled!");
+    }
+
+    public static SimpleNPCService simpleNPCs() {
+        return Bukkit.getServer().getServicesManager().load(SimpleNPCService.class);
     }
 
     /**

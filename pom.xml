@@ -503,6 +503,14 @@
       <version>4.0.0</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.ags</groupId>
+      <artifactId>SimpleNPCs</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/SimpleNPCs-1.0-SNAPSHOT.jar</systemPath>
+    </dependency>
   </dependencies>
 
   <repositories>

@@ -1,8 +1,9 @@
-package pl.betoncraft.betonquest.compatibility.mmogroup.mmocore;
+package pl.betoncraft.betonquest.compatibility.simplenpcs;
 
-import net.Indyuce.mmocore.api.event.PlayerPostCastSkillEvent;
+import com.ags.simplenpcs.api.NPCRightClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import pl.betoncraft.betonquest.BetonQuest;
@@ -11,29 +12,37 @@ import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import pl.betoncraft.betonquest.utils.PlayerConverter;
 
+/**
+ * Player has to right click the NPC
+ */
 @SuppressWarnings("PMD.CommentRequired")
-public class MMOCoreCastSkillObjective extends Objective implements Listener {
+public class NPCInteractObjective extends Objective implements Listener {
 
-    private final String skillId;
+    private final int npcId;
+    private final boolean cancel;
 
-    public MMOCoreCastSkillObjective(final Instruction instruction) throws InstructionParseException {
+    public NPCInteractObjective(final Instruction instruction) throws InstructionParseException {
         super(instruction);
-
         template = ObjectiveData.class;
-        skillId = instruction.next();
+        npcId = instruction.getInt();
+        if (npcId < 0) {
+            throw new InstructionParseException("ID cannot be negative");
+        }
+        cancel = instruction.hasArgument("cancel");
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onSkillCast(final PlayerPostCastSkillEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onNPCClick(final NPCRightClickEvent event) {
         final String playerID = PlayerConverter.getID(event.getPlayer());
-        if (!containsPlayer(playerID) || !checkConditions(playerID)) {
+        if (BetonQuest.simpleNPCs().getID(event.getNPC()) != npcId || !containsPlayer(playerID)) {
             return;
         }
-        final String skillName = event.getCast().getSkill().getId();
-        if (!skillId.equalsIgnoreCase(skillName) || !event.wasSuccessful()) {
-            return;
+        if (checkConditions(playerID)) {
+            if (cancel) {
+                event.setCancelled(true);
+            }
+            completeObjective(playerID);
         }
-        completeObjective(playerID);
     }
 
     @Override
