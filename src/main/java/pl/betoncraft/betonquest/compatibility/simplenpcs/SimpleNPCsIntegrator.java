@@ -2,7 +2,6 @@ package pl.betoncraft.betonquest.compatibility.simplenpcs;
 
 import pl.betoncraft.betonquest.BetonQuest;
 import pl.betoncraft.betonquest.compatibility.Integrator;
-import pl.betoncraft.betonquest.compatibility.citizens.NPCInteractObjective;
 import pl.betoncraft.betonquest.exceptions.HookException;
 
 public class SimpleNPCsIntegrator implements Integrator {
