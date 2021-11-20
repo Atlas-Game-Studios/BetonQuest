@@ -1,6 +1,7 @@
 package pl.betoncraft.betonquest.compatibility.simplenpcs;
 
 import pl.betoncraft.betonquest.BetonQuest;
+import pl.betoncraft.betonquest.compatibility.Compatibility;
 import pl.betoncraft.betonquest.compatibility.Integrator;
 import pl.betoncraft.betonquest.exceptions.HookException;
 
@@ -17,6 +18,13 @@ public class SimpleNPCsIntegrator implements Integrator {
     @Override
     public void hook() throws HookException {
         simpleNPCsListener = new SimpleNPCsListener();
+
+        if (Compatibility.getHooked().contains("HolographicDisplays")) {
+            new SimpleNPCsHologram();
+        }
+
+        NPCHider.start();
+        plugin.registerEvents("updatevisibility", UpdateVisibilityNowEvent.class);
 
         plugin.registerVariable("citizens", SimpleNPCsVariable.class);
         plugin.registerObjectives("npcinteract", NPCInteractObjective.class);
