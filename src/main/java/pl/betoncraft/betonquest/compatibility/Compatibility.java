@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import pl.betoncraft.betonquest.BetonQuest;
 import pl.betoncraft.betonquest.compatibility.brewery.BreweryIntegrator;
-import pl.betoncraft.betonquest.compatibility.citizens.CitizensIntegrator;
+//import pl.betoncraft.betonquest.compatibility.citizens.CitizensIntegrator;
 import pl.betoncraft.betonquest.compatibility.denizen.DenizenIntegrator;
 import pl.betoncraft.betonquest.compatibility.effectlib.EffectLibIntegrator;
 import pl.betoncraft.betonquest.compatibility.heroes.HeroesIntegrator;
