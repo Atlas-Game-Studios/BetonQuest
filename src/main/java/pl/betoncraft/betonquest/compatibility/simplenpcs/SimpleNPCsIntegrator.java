@@ -5,6 +5,8 @@ import pl.betoncraft.betonquest.compatibility.Compatibility;
 import pl.betoncraft.betonquest.compatibility.Integrator;
 import pl.betoncraft.betonquest.exceptions.HookException;
 
+import java.util.Arrays;
+
 public class SimpleNPCsIntegrator implements Integrator {
 
     private final BetonQuest plugin;
@@ -32,7 +34,12 @@ public class SimpleNPCsIntegrator implements Integrator {
 
     @Override
     public void reload() {
-
+        if (Compatibility.getHooked().containsAll(Arrays.asList("SimpleNPCs", "HolographicDisplays"))) {
+            SimpleNPCsHologram.reload();
+        }
+        if (Compatibility.getHooked().contains("SimpleNPCs")) {
+            simpleNPCsListener.reload();
+        }
     }
 
     @Override
