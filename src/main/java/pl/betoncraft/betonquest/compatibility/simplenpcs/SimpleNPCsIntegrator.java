@@ -40,6 +40,9 @@ public class SimpleNPCsIntegrator implements Integrator {
         if (Compatibility.getHooked().contains("SimpleNPCs")) {
             simpleNPCsListener.reload();
         }
+        if (NPCHider.getInstance() != null) {
+            NPCHider.start();
+        }
     }
 
     @Override
