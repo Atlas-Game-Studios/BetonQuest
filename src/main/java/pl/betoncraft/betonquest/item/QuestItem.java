@@ -3,6 +3,7 @@ package pl.betoncraft.betonquest.item;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
@@ -429,6 +430,8 @@ public class QuestItem {
 
         final ItemStack item = new ItemStack(material, stackSize);
         final ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(name.get());
         meta.setLore(lore.get());
         meta.setUnbreakable(unbreakable.isUnbreakable());
