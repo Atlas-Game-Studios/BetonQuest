@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import pl.betoncraft.betonquest.compatibility.Compatibility;
 import pl.betoncraft.betonquest.compatibility.Integrator;
 import pl.betoncraft.betonquest.compatibility.citizens.CitizensHologram;
+import pl.betoncraft.betonquest.compatibility.simplenpcs.SimpleNPCsHologram;
 
 
 @SuppressWarnings("PMD.CommentRequired")
@@ -25,6 +26,11 @@ public class HolographicDisplaysIntegrator implements Integrator {
         // if Citizens is hooked, start CitizensHologram
         if (Compatibility.getHooked().contains("Citizens")) {
             new CitizensHologram();
+        }
+
+        // if SimpleNPCs is hooked start SimpleNPCsHologram
+        if (Compatibility.getHooked().contains("SimpleNPCs")) {
+            new SimpleNPCsHologram();
         }
     }
 
