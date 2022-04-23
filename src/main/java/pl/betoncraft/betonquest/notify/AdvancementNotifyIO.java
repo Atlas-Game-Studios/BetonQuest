@@ -1,8 +1,8 @@
 package pl.betoncraft.betonquest.notify;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
+import io.lumine.mythic.utils.gson.GsonBuilder;
+import io.lumine.mythic.utils.gson.JsonIOException;
+import io.lumine.mythic.utils.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
