@@ -125,6 +125,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
     public void applyVisibility(final Player player, final Integer npcID) {
         final NPC npc = BetonQuest.simpleNPCs().getNPC(npcID);
         if (npc == null) {
+            if (!BetonQuest.simpleNPCs().isFinishedLoading()) return;
             LogUtils.getLogger().log(Level.WARNING, "NPCHider could not update visibility for npc " + npcID + ": No npc with this id found!");
             return;
         }
