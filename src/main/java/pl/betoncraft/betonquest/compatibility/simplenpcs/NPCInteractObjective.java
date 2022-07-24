@@ -1,6 +1,6 @@
 package pl.betoncraft.betonquest.compatibility.simplenpcs;
 
-import com.ags.simplenpcs.api.NPCRightClickEvent;
+import com.github.arnhav.api.NPCRightClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

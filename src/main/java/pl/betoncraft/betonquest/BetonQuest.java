@@ -1,6 +1,6 @@
 package pl.betoncraft.betonquest;
 
-import com.ags.simplenpcs.api.SimpleNPCService;
+import com.github.arnhav.api.SimpleNPCService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.papermc.lib.PaperLib;
 import org.apache.logging.log4j.LogManager;
