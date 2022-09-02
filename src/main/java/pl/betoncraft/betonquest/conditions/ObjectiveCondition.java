@@ -3,6 +3,7 @@ package pl.betoncraft.betonquest.conditions;
 import pl.betoncraft.betonquest.BetonQuest;
 import pl.betoncraft.betonquest.Instruction;
 import pl.betoncraft.betonquest.api.Condition;
+import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import pl.betoncraft.betonquest.id.ObjectiveID;
 
@@ -24,7 +25,9 @@ public class ObjectiveCondition extends Condition {
 
     @Override
     protected Boolean execute(final String playerID) {
-        return BetonQuest.getInstance().getObjective(objective).containsPlayer(playerID);
+        Objective o = BetonQuest.getInstance().getObjective(objective);
+        if (o == null) return false;
+        return o.containsPlayer(playerID);
     }
 
 }
