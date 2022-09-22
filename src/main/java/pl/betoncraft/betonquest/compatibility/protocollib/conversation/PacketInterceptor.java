@@ -7,6 +7,8 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.ComponentConverter;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,42 +40,26 @@ public class PacketInterceptor implements Interceptor, Listener {
     protected final Player player;
     private final List<WrapperPlayServerChat> messages = new ArrayList<>();
     private final PacketAdapter packetAdapter;
-    private int baseComponentIndex = -1;
 
     public PacketInterceptor(final Conversation conv, final String playerID) {
         this.conv = conv;
         this.player = PlayerConverter.getPlayer(playerID);
 
         // Intercept Packets
-        packetAdapter = new PacketAdapter(BetonQuest.getInstance(), ListenerPriority.HIGHEST,
-                PacketType.Play.Server.CHAT
-
-        ) {
+        packetAdapter = new PacketAdapter(BetonQuest.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.CHAT) {
             @Override
             public void onPacketSending(final PacketEvent event) {
-                if (event.getPlayer() != player) {
-                    return;
-                }
+                if (event.getPlayer() != player) return;
 
-                if (event.getPacketType().equals(PacketType.Play.Server.CHAT)) {
-                    final PacketContainer packet = event.getPacket();
-                    if (baseComponentIndex == -1) {
-                        if (packet.getModifier().read(1) instanceof BaseComponent[]) {
-                            baseComponentIndex = 1;
-                        } else {
-                            baseComponentIndex = 2;
-                        }
-                    }
-                    final BaseComponent[] components = (BaseComponent[]) packet.getModifier().read(baseComponentIndex);
-                    if (components != null && components.length > 0 && ((TextComponent) components[0]).getText().contains(MESSAGE_PASSTHROUGH_TAG)) {
-                        return;
-                    }
+                if (!event.getPacketType().equals(PacketType.Play.Server.CHAT)) return;
+                final WrapperPlayServerChat packet = new WrapperPlayServerChat(event.getPacket());
+                WrappedChatComponent wrappedChatComponent = packet.getMessage();
+                final BaseComponent[] components = ComponentConverter.fromWrapper(wrappedChatComponent);
+                if (components != null && components.length > 0 && ((TextComponent) components[0]).getText().contains(MESSAGE_PASSTHROUGH_TAG)) return;
 
-                    // Else save message to replay later
-                    final WrapperPlayServerChat chat = new WrapperPlayServerChat(packet);
-                    event.setCancelled(true);
-                    messages.add(chat);
-                }
+                // Else save message to replay later
+                event.setCancelled(true);
+                messages.add(packet);
             }
         };
 
