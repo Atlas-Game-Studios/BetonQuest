@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.ChatType;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.kyori.adventure.text.Component;
 
 import java.util.Arrays;
 
@@ -35,8 +35,8 @@ public class WrapperPlayServerChat extends PacketHandlerDecorator {
      *
      * @return The current message
      */
-    public WrappedChatComponent getMessage() {
-        return getHandle().getChatComponents().read(0);
+    public Component getMessage() {
+        return (Component) getHandle().getModifier().withType(Component.class).read(0);
     }
 
     /**
@@ -44,8 +44,8 @@ public class WrapperPlayServerChat extends PacketHandlerDecorator {
      *
      * @param value - new value.
      */
-    public void setMessage(final WrappedChatComponent value) {
-        getHandle().getChatComponents().write(0, value);
+    public void setMessage(final Component value) {
+        getHandle().getModifier().withType(Component.class).write(0, value);
     }
 
     public ChatType getChatType() {

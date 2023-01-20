@@ -5,10 +5,11 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.async.AsyncListenerHandler;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.AdventureComponentConverter;
 import com.comphenix.protocol.wrappers.ComponentConverter;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -53,9 +54,11 @@ public class PacketInterceptor implements Interceptor, Listener {
 
                 if (!event.getPacketType().equals(PacketType.Play.Server.CHAT)) return;
                 final WrapperPlayServerChat packet = new WrapperPlayServerChat(event.getPacket());
-                WrappedChatComponent wrappedChatComponent = packet.getMessage();
+                Component message = packet.getMessage();
+                WrappedChatComponent wrappedChatComponent = AdventureComponentConverter.fromComponent(message);
                 final BaseComponent[] components = ComponentConverter.fromWrapper(wrappedChatComponent);
-                if (components != null && components.length > 0 && ((TextComponent) components[0]).getText().contains(MESSAGE_PASSTHROUGH_TAG)) return;
+                if (components != null && components.length > 0 && ((TextComponent) components[0]).getText().contains(MESSAGE_PASSTHROUGH_TAG))
+                    return;
 
                 // Else save message to replay later
                 event.setCancelled(true);
