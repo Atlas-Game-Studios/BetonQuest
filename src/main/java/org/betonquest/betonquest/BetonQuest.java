@@ -1,5 +1,6 @@
 package org.betonquest.betonquest;
 
+import com.github.arnhav.api.SimpleNPCService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -1414,6 +1415,10 @@ public class BetonQuest extends JavaPlugin {
             rpgMenu.onDisable();
         }
         FreezeEvent.cleanup();
+    }
+
+    public static SimpleNPCService simpleNPCs() {
+        return Bukkit.getServer().getServicesManager().load(SimpleNPCService.class);
     }
 
     /**

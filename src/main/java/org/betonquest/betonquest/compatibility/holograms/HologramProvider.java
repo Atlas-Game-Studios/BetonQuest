@@ -7,6 +7,7 @@ import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.compatibility.Compatibility;
 import org.betonquest.betonquest.compatibility.Integrator;
 import org.betonquest.betonquest.compatibility.citizens.CitizensHologramLoop;
+import org.betonquest.betonquest.compatibility.simplenpcs.SimpleNPCsHologram;
 import org.betonquest.betonquest.exceptions.HookException;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.Bukkit;
@@ -156,6 +157,10 @@ public class HologramProvider implements Integrator {
         if (Compatibility.getHooked().contains("Citizens")) {
             this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
         }
+        // if SimpleNPCs is hooked, start SimpleNPCsHologram
+        if (Compatibility.getHooked().contains("SimpleNPCs")) {
+            new SimpleNPCsHologram();
+        }
         new HologramListener();
     }
 
@@ -174,6 +179,9 @@ public class HologramProvider implements Integrator {
                     this.citizensHologramLoop.close();
                     this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
                 }
+                if (Compatibility.getHooked().contains("SimpleNPCs")) {
+                    new SimpleNPCsHologram();
+                }
             }
         }
     }
@@ -187,6 +195,9 @@ public class HologramProvider implements Integrator {
                 if (instance.citizensHologramLoop != null) {
                     instance.citizensHologramLoop.close();
                     instance.citizensHologramLoop = null;
+                }
+                if (Compatibility.getHooked().contains("SimpleNPCs")) {
+                    new SimpleNPCsHologram();
                 }
             }
         }

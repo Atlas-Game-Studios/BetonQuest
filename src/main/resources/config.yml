@@ -51,6 +51,7 @@ cmd_blacklist:
   - spawn
 hook:
   citizens: true
+  simplenpcs: true
   mythicmobs: true
   vault: true
   worldguard: true
