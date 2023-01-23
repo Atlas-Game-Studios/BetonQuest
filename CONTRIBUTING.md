@@ -11,7 +11,7 @@ If you had any errors in the console with a line containing `pl.betoncraft.beton
     ```
     [today] [Server thread/ERROR]: Some error in BetonQuest
     org.bukkit.event.EventException: null
-        at pl.betoncraft.betonquest.BetonQuest.method(BetonQuest.java:123) ~[?:?]
+        at org.betoncraft.betonquest.BetonQuest.method(BetonQuest.java:123) ~[?:?]
         at some.more.lines...
     ```
 

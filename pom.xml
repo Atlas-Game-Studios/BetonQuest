@@ -14,7 +14,7 @@
   </properties>
 
   <name>BetonQuest</name>
-  <groupId>pl.betoncraft</groupId>
+  <groupId>org.betoncraft</groupId>
   <artifactId>betonquest</artifactId>
   <version>${version}-SNAPSHOT</version>
   <description>All Your Adventure Supplies</description>
@@ -504,12 +504,12 @@
       <scope>test</scope>
     </dependency>
 
+    <!--SimpleNPCs-->
     <dependency>
       <groupId>com.github.arnhav</groupId>
       <artifactId>SimpleNPCs</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/dependencies/SimpleNPCs-1.0-SNAPSHOT.jar</systemPath>
+      <version>1.0.5-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -569,6 +569,11 @@
     <repository>
       <id>betonquest-minecraft-repo</id>
       <url>https://libraries.minecraft.net/</url>
+    </repository>
+    <!--SimpleNPCs-->
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
 

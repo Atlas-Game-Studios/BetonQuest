@@ -1,0 +1,70 @@
+package org.betoncraft.betonquest.compatibility.simplenpcs;
+
+import com.github.arnhav.api.NPCRightClickEvent;
+import org.betoncraft.betonquest.BetonQuest;
+import org.betoncraft.betonquest.Instruction;
+import org.betoncraft.betonquest.api.Objective;
+import org.betoncraft.betonquest.exceptions.InstructionParseException;
+import org.betoncraft.betonquest.utils.PlayerConverter;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+
+/**
+ * Player has to right click the NPC
+ */
+@SuppressWarnings("PMD.CommentRequired")
+public class NPCInteractObjective extends Objective implements Listener {
+
+    private final int npcId;
+    private final boolean cancel;
+
+    public NPCInteractObjective(final Instruction instruction) throws InstructionParseException {
+        super(instruction);
+        template = ObjectiveData.class;
+        npcId = instruction.getInt();
+        if (npcId < 0) {
+            throw new InstructionParseException("ID cannot be negative");
+        }
+        cancel = instruction.hasArgument("cancel");
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onNPCClick(final NPCRightClickEvent event) {
+        final String playerID = PlayerConverter.getID(event.getPlayer());
+        Integer id = BetonQuest.simpleNPCs().getID(event.getNPC());
+        if (id == null) return;
+        if (id != npcId || !containsPlayer(playerID)) {
+            return;
+        }
+        if (checkConditions(playerID)) {
+            if (cancel) {
+                event.setCancelled(true);
+            }
+            completeObjective(playerID);
+        }
+    }
+
+    @Override
+    public void start() {
+        Bukkit.getPluginManager().registerEvents(this, BetonQuest.getInstance());
+    }
+
+    @Override
+    public void stop() {
+        HandlerList.unregisterAll(this);
+    }
+
+    @Override
+    public String getDefaultDataInstruction() {
+        return "";
+    }
+
+    @Override
+    public String getProperty(final String name, final String playerID) {
+        return "";
+    }
+
+}
