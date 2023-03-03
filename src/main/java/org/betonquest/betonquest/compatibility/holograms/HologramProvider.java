@@ -7,7 +7,7 @@ import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.compatibility.Compatibility;
 import org.betonquest.betonquest.compatibility.Integrator;
 import org.betonquest.betonquest.compatibility.citizens.CitizensHologramLoop;
-import org.betonquest.betonquest.compatibility.simplenpcs.SimpleNPCsHologram;
+import org.betonquest.betonquest.compatibility.simplenpcs.SimpleNPCsHologramLoop;
 import org.betonquest.betonquest.exceptions.HookException;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.Bukkit;
@@ -59,6 +59,11 @@ public class HologramProvider implements Integrator {
      * The current {@link CitizensHologramLoop}.
      */
     private CitizensHologramLoop citizensHologramLoop;
+
+    /**
+     * The current {@link SimpleNPCsHologramLoop}
+     */
+    private SimpleNPCsHologramLoop simpleNPCsHologramLoop;
 
 
     /**
@@ -159,7 +164,7 @@ public class HologramProvider implements Integrator {
         }
         // if SimpleNPCs is hooked, start SimpleNPCsHologram
         if (Compatibility.getHooked().contains("SimpleNPCs")) {
-            new SimpleNPCsHologram();
+            this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop();
         }
         new HologramListener();
     }
@@ -180,7 +185,8 @@ public class HologramProvider implements Integrator {
                     this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
                 }
                 if (Compatibility.getHooked().contains("SimpleNPCs")) {
-                    new SimpleNPCsHologram();
+                    this.simpleNPCsHologramLoop.close();
+                    this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop();
                 }
             }
         }
@@ -197,7 +203,8 @@ public class HologramProvider implements Integrator {
                     instance.citizensHologramLoop = null;
                 }
                 if (Compatibility.getHooked().contains("SimpleNPCs")) {
-                    new SimpleNPCsHologram();
+                    instance.simpleNPCsHologramLoop.close();
+                    instance.simpleNPCsHologramLoop = null;
                 }
             }
         }
