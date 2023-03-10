@@ -1,6 +1,8 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
+import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.api.NPCRightClickEvent;
+import com.github.arnhav.objects.SNPC;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.Objective;
@@ -36,8 +38,8 @@ public class NPCInteractObjective extends Objective implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onNPCClick(final NPCRightClickEvent event) {
         final OnlineProfile onlineProfile = PlayerConverter.getID(event.getPlayer());
-        Integer id = BetonQuest.simpleNPCs().getID(event.getNPC());
-        if (id == null) return;
+        SNPC snpc = SimpleNPCs.npcManager().getNPC(event.getNPC());
+        int id = SimpleNPCs.npcManager().getID(snpc);
         if (id != npcId || !containsPlayer(onlineProfile)) {
             return;
         }

@@ -1,8 +1,10 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
+import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.api.NPCClickEvent;
 import com.github.arnhav.api.NPCLeftClickEvent;
 import com.github.arnhav.api.NPCRightClickEvent;
+import com.github.arnhav.objects.SNPC;
 import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
@@ -104,14 +106,15 @@ public class SimpleNPCsListener implements Listener {
             }
             return;
         }
-        final String npcId = String.valueOf(BetonQuest.simpleNPCs().getID(event.getNPC()));
+        SNPC snpc = SimpleNPCs.npcManager().getNPC(event.getNPC());
+        final String npcId = String.valueOf(SimpleNPCs.npcManager().getID(snpc));
         String assignment = Config.getNpc(npcId);
         if ("true".equalsIgnoreCase(Config.getString("config.citizens_npcs_by_name")) && assignment == null) {
             assignment = Config.getNpc(event.getNPC().getProfile().getName());
         }
         if (assignment != null) {
             event.setCancelled(true);
-            new SimpleNPCsConversation(onlineProfile, assignment, event.getNPC().getLocation(), event.getNPC());
+            new SimpleNPCsConversation(onlineProfile, assignment, event.getNPC().getLocation(), snpc);
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
-import com.github.juliarn.npc.NPC;
+import com.github.arnhav.SimpleNPCs;
+import com.github.arnhav.objects.SNPC;
 import de.slikey.effectlib.util.DynamicLocation;
 import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
@@ -208,7 +209,7 @@ public class SimpleNPCsParticle extends BukkitRunnable {
                 }
 
                 // get the NPC from its ID
-                final NPC npc = BetonQuest.simpleNPCs().getNPC(npcId);
+                final SNPC npc = SimpleNPCs.npcManager().getNPC(npcId);
 
                 // skip if there are no such NPC or it's not spawned or not visible
                 if (npc == null || !npc.getLocation().getWorld().equals(onlineProfile.getPlayer().getWorld()) ||

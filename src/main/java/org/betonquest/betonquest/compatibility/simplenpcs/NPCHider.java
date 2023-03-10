@@ -1,6 +1,7 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
-import com.github.juliarn.npc.NPC;
+import com.github.arnhav.SimpleNPCs;
+import com.github.arnhav.objects.SNPC;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
@@ -122,7 +123,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
      * @param npcID         ID of the NPC
      */
     public void applyVisibility(final OnlineProfile onlineProfile, final Integer npcID) {
-        final NPC npc = BetonQuest.simpleNPCs().getNPC(npcID);
+        final SNPC npc = SimpleNPCs.npcManager().getNPC(npcID);
         if (npc == null) {
             if (!BetonQuest.simpleNPCs().isFinishedLoading()) return;
             LOG.warn("NPCHider could not update visibility for npc " + npcID + ": No npc with this id found!");
@@ -131,9 +132,9 @@ public final class NPCHider extends BukkitRunnable implements Listener {
         if (BetonQuest.simpleNPCs().isFinishedLoading()) {
             final Set<ConditionID> conditions = npcs.get(npcID);
             if (conditions == null || conditions.isEmpty() || !BetonQuest.conditions(onlineProfile, conditions)) {
-                BetonQuest.simpleNPCs().showNPCToPlayer(npc, onlineProfile.getPlayer());
+                npc.show(onlineProfile.getPlayer());
             } else {
-                BetonQuest.simpleNPCs().hideNPCFromPlayer(npc, onlineProfile.getPlayer());
+                npc.hide(onlineProfile.getPlayer());
             }
         }
     }
@@ -154,10 +155,10 @@ public final class NPCHider extends BukkitRunnable implements Listener {
      *
      * @param npcID ID of the NPC
      */
-    public void applyVisibility(final NPC npcID) {
+    public void applyVisibility(final SNPC npcID) {
         //check if the npc is in the default registry
         for (final OnlineProfile onlineProfile : PlayerConverter.getOnlineProfiles()) {
-            applyVisibility(onlineProfile, BetonQuest.simpleNPCs().getID(npcID));
+            applyVisibility(onlineProfile, SimpleNPCs.npcManager().getID(npcID));
         }
     }
 
@@ -179,11 +180,11 @@ public final class NPCHider extends BukkitRunnable implements Listener {
      * @param npc           ID of the NPC
      * @return true if the NPC is visible to that player, false otherwise
      */
-    public boolean isInvisible(final OnlineProfile onlineProfile, final NPC npc) {
+    public boolean isInvisible(final OnlineProfile onlineProfile, final SNPC npc) {
         if (npc == null) {
             return false;
         }
-        return !npc.isShownFor(onlineProfile.getPlayer());
+        return !npc.getNpc().isShownFor(onlineProfile.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

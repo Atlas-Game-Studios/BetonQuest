@@ -1,6 +1,7 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
-import com.github.juliarn.npc.NPC;
+import com.github.arnhav.SimpleNPCs;
+import com.github.arnhav.objects.SNPC;
 import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
@@ -81,7 +82,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
         final Map<Integer, BetonHologram> npcBetonHolograms = new HashMap<>();
         final List<BetonHologram> holograms = new ArrayList<>();
         npcIDs.forEach(npcID -> {
-            final NPC npc = BetonQuest.simpleNPCs().getNPC(npcID);
+            final SNPC npc = SimpleNPCs.npcManager().getNPC(npcID);
             if (npc == null) {
                 npcBetonHolograms.put(npcID, null);
             } else {
@@ -113,7 +114,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
         npcHologram.npcHolograms.entrySet().forEach(entry -> {
                     final Integer npcID = entry.getKey();
                     final BetonHologram hologram = entry.getValue();
-                    final NPC npc = BetonQuest.simpleNPCs().getNPC(npcID);
+                    final SNPC npc = SimpleNPCs.npcManager().getNPC(npcID);
                     if (npc == null) {
                         if (hologram == null) {
                             return;

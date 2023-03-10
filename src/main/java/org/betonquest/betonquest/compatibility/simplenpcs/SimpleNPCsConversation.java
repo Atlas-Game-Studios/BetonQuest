@@ -1,5 +1,6 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
+import com.github.arnhav.objects.SNPC;
 import com.github.juliarn.npc.NPC;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.conversation.Conversation;
@@ -11,9 +12,9 @@ import org.bukkit.Location;
 @SuppressWarnings("PMD.CommentRequired")
 public class SimpleNPCsConversation extends Conversation {
 
-    private final NPC npc;
+    private final SNPC npc;
 
-    public SimpleNPCsConversation(final OnlineProfile onlineProfile, final String conversationID, final Location location, final NPC npc) {
+    public SimpleNPCsConversation(final OnlineProfile onlineProfile, final String conversationID, final Location location, final SNPC npc) {
         super(onlineProfile, conversationID, location);
         this.npc = npc;
     }
@@ -25,7 +26,7 @@ public class SimpleNPCsConversation extends Conversation {
      *
      * @return the NPC or null if it's too early
      */
-    public NPC getNPC() {
+    public SNPC getNPC() {
         return npc;
     }
 

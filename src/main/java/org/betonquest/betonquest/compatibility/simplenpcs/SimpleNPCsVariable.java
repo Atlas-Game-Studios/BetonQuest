@@ -1,8 +1,8 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
-import com.github.juliarn.npc.NPC;
+import com.github.arnhav.SimpleNPCs;
+import com.github.arnhav.objects.SNPC;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.Variable;
 import org.betonquest.betonquest.api.profiles.Profile;
@@ -42,7 +42,7 @@ public class SimpleNPCsVariable extends Variable {
     @Override
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public String getValue(final Profile profile) {
-        final NPC npc = BetonQuest.simpleNPCs().getNPC(npcId);
+        final SNPC npc = SimpleNPCs.npcManager().getNPC(npcId);
         if (npc == null) {
             return "";
         }
