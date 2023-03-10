@@ -87,7 +87,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                 npcBetonHolograms.put(npcID, null);
             } else {
                 final BetonHologram hologram = HologramProvider.getInstance()
-                        .createHologram(baseName + npcID, npc.getLocation().add(vector));
+                        .createHologram(baseName + npcID, npc.getLocation().clone().add(vector));
                 npcBetonHolograms.put(npcID, hologram);
                 holograms.add(hologram);
             }
@@ -124,7 +124,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                         npcHologram.holograms().remove(hologram);
                         hologram.delete();
                     } else {
-                        final Location location = npc.getLocation().add(npcHologram.vector());
+                        final Location location = npc.getLocation().clone().add(npcHologram.vector());
                         if (hologram == null) {
                             final BetonHologram newHologram = HologramProvider.getInstance()
                                     .createHologram(npcHologram.baseName + npcID, location);

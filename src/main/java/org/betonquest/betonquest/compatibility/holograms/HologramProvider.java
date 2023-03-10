@@ -184,7 +184,7 @@ public class HologramProvider implements Integrator {
                     this.citizensHologramLoop.close();
                     this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
                 }
-                if (Compatibility.getHooked().contains("SimpleNPCs")) {
+                if (instance.simpleNPCsHologramLoop != null) {
                     this.simpleNPCsHologramLoop.close();
                     this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop();
                 }
@@ -202,7 +202,7 @@ public class HologramProvider implements Integrator {
                     instance.citizensHologramLoop.close();
                     instance.citizensHologramLoop = null;
                 }
-                if (Compatibility.getHooked().contains("SimpleNPCs")) {
+                if (instance.simpleNPCsHologramLoop != null) {
                     instance.simpleNPCsHologramLoop.close();
                     instance.simpleNPCsHologramLoop = null;
                 }
