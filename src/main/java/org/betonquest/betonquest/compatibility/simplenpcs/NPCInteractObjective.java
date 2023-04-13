@@ -39,6 +39,7 @@ public class NPCInteractObjective extends Objective implements Listener {
     public void onNPCClick(final NPCRightClickEvent event) {
         final OnlineProfile onlineProfile = PlayerConverter.getID(event.getPlayer());
         SNPC snpc = SimpleNPCs.npcManager().getNPC(event.getNPC());
+        if (snpc == null) return;
         int id = SimpleNPCs.npcManager().getID(snpc);
         if (id != npcId || !containsPlayer(onlineProfile)) {
             return;
