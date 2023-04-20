@@ -106,15 +106,15 @@ public class SimpleNPCsListener implements Listener {
             }
             return;
         }
-        SNPC snpc = SimpleNPCs.npcManager().getNPC(event.getNPC());
-        final String npcId = String.valueOf(SimpleNPCs.npcManager().getID(snpc));
+        SNPC snpc = event.getNpc();
+        final String npcId = String.valueOf(snpc.getId());
         String assignment = Config.getNpc(npcId);
         if ("true".equalsIgnoreCase(Config.getString("config.citizens_npcs_by_name")) && assignment == null) {
-            assignment = Config.getNpc(event.getNPC().getProfile().getName());
+            assignment = Config.getNpc(snpc.getProfile().getName());
         }
         if (assignment != null) {
             event.setCancelled(true);
-            new SimpleNPCsConversation(onlineProfile, assignment, event.getNPC().getLocation(), snpc);
+            new SimpleNPCsConversation(onlineProfile, assignment, snpc.getLocation(), snpc);
         }
     }
 }

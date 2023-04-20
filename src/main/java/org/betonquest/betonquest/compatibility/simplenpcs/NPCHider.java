@@ -158,7 +158,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
     public void applyVisibility(final SNPC npcID) {
         //check if the npc is in the default registry
         for (final OnlineProfile onlineProfile : PlayerConverter.getOnlineProfiles()) {
-            applyVisibility(onlineProfile, SimpleNPCs.npcManager().getID(npcID));
+            applyVisibility(onlineProfile, npcID.getId());
         }
     }
 

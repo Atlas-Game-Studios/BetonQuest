@@ -38,9 +38,9 @@ public class NPCInteractObjective extends Objective implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onNPCClick(final NPCRightClickEvent event) {
         final OnlineProfile onlineProfile = PlayerConverter.getID(event.getPlayer());
-        SNPC snpc = SimpleNPCs.npcManager().getNPC(event.getNPC());
+        SNPC snpc = event.getNpc();
         if (snpc == null) return;
-        int id = SimpleNPCs.npcManager().getID(snpc);
+        int id = snpc.getId();
         if (id != npcId || !containsPlayer(onlineProfile)) {
             return;
         }
