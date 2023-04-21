@@ -79,7 +79,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
                     npcId = Integer.parseInt(npcIds);
                 } catch (final NumberFormatException e) {
                     LOG.warn(cfgPackage, "NPC ID '" + npcIds + "' is not a valid number, in hide_npcs", e);
-                    continue npcs;
+                    continue;
                 }
                 final Set<ConditionID> conditions = new HashSet<>();
                 final String conditionsString = section.getString(npcIds);
@@ -125,8 +125,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
     public void applyVisibility(final OnlineProfile onlineProfile, final Integer npcID) {
         final SNPC npc = SimpleNPCs.npcManager().getNPC(npcID);
         if (npc == null) {
-            if (!BetonQuest.simpleNPCs().isFinishedLoading()) return;
-            LOG.warn("NPCHider could not update visibility for npc " + npcID + ": No npc with this id found!");
+//            LOG.warn("NPCHider could not update visibility for npc " + npcID + ": No npc with this id found!");
             return;
         }
         if (BetonQuest.simpleNPCs().isFinishedLoading()) {
