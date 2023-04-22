@@ -1,12 +1,11 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
-import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.api.NPCClickEvent;
 import com.github.arnhav.api.NPCLeftClickEvent;
 import com.github.arnhav.api.NPCRightClickEvent;
 import com.github.arnhav.objects.SNPC;
-import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestLogger;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.conversation.CombatTagger;
@@ -26,8 +25,9 @@ import java.util.UUID;
  * Starts new conversations with NPCs
  */
 @SuppressWarnings("PMD.CommentRequired")
-@CustomLog
 public class SimpleNPCsListener implements Listener {
+
+    private static final BetonQuestLogger LOG = BetonQuestLogger.create();
 
     private RightClickListener rightClick;
     private LeftClickListener leftClick;

@@ -3,8 +3,8 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
 import de.slikey.effectlib.util.DynamicLocation;
-import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestLogger;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.compatibility.effectlib.EffectLibIntegrator;
@@ -23,8 +23,9 @@ import java.util.Map.Entry;
  * Displays a particle above NPCs with conversations.
  */
 @SuppressWarnings("PMD.CommentRequired")
-@CustomLog
 public class SimpleNPCsParticle extends BukkitRunnable {
+
+    private static final BetonQuestLogger LOG = BetonQuestLogger.create();
 
     private static SimpleNPCsParticle instance;
     private final Map<UUID, Map<Integer, Effect>> profiles = new HashMap<>();

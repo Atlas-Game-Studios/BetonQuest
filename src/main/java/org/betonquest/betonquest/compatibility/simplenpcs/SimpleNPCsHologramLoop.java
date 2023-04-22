@@ -2,7 +2,6 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 
 import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
-import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.compatibility.holograms.BetonHologram;
@@ -29,8 +28,8 @@ import java.util.Map;
 /**
  * Hides and shows holograms to players at an NPC's location. Based on conditions.
  */
-@CustomLog
 public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
+
     /**
      * The task that lets holograms follow NPCs.
      */
@@ -86,8 +85,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
             if (npc == null) {
                 npcBetonHolograms.put(npcID, null);
             } else {
-                final BetonHologram hologram = HologramProvider.getInstance()
-                        .createHologram(baseName + npcID, npc.getLocation().clone().add(vector));
+                final BetonHologram hologram = HologramProvider.getInstance().createHologram(npc.getLocation().clone().add(vector));
                 npcBetonHolograms.put(npcID, hologram);
                 holograms.add(hologram);
             }
@@ -126,8 +124,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                     } else {
                         final Location location = npc.getLocation().clone().add(npcHologram.vector());
                         if (hologram == null) {
-                            final BetonHologram newHologram = HologramProvider.getInstance()
-                                    .createHologram(npcHologram.baseName + npcID, location);
+                            final BetonHologram newHologram = HologramProvider.getInstance().createHologram(location);
                             entry.setValue(newHologram);
                             npcHologram.holograms().add(newHologram);
                             updateHologram(newHologram);

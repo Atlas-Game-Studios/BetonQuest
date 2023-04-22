@@ -3,8 +3,8 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.CustomLog;
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestLogger;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.config.Config;
@@ -26,8 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("PMD.CommentRequired")
-@CustomLog
 public final class NPCHider extends BukkitRunnable implements Listener {
+
+    private static final BetonQuestLogger LOG = BetonQuestLogger.create();
 
     private static NPCHider instance;
 
