@@ -315,13 +315,20 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
-    <!-- Atlas -->
+    <!-- Atlas Start -->
     <dependency>
       <groupId>com.github.arnhav</groupId>
       <artifactId>SimpleNPCs</artifactId>
       <version>1.0.7-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+<!--    <dependency>-->
+<!--      <groupId>co.bronet.machinations</groupId>-->
+<!--      <artifactId>Machinations</artifactId>-->
+<!--      <version>5.5.2047-RELEASE</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
+    <!-- Atlas End -->
 
     <!-- from sonatype repository -->
     <dependency>
@@ -537,11 +544,12 @@
       <id>betonquest-minecraft-repo</id>
       <url>https://libraries.minecraft.net/</url>
     </repository>
-<!--    &lt;!&ndash; Atlas Changes &ndash;&gt;-->
+    <!-- Atlas Start -->
 <!--    <repository>-->
-<!--      <id>jitpack.io</id>-->
-<!--      <url>https://jitpack.io</url>-->
+<!--      <id>betonquest-bronet-releases</id>-->
+<!--      <url>https://repo.bronet.co/releases</url>-->
 <!--    </repository>-->
+    <!--Atlas End-->
   </repositories>
 
   <build>
