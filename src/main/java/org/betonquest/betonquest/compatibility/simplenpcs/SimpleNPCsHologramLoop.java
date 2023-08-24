@@ -4,6 +4,8 @@ import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.compatibility.holograms.BetonHologram;
 import org.betonquest.betonquest.compatibility.holograms.HologramLoop;
 import org.betonquest.betonquest.compatibility.holograms.HologramProvider;
@@ -46,8 +48,8 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
     /**
      * Starts a loop, which checks hologram conditions and shows them to players.
      */
-    public SimpleNPCsHologramLoop() {
-        super();
+    public SimpleNPCsHologramLoop(final BetonQuestLoggerFactory loggerFactory, final BetonQuestLogger log) {
+        super(loggerFactory, log);
         npcHolograms = new ArrayList<>();
         holograms = initialize("npc_holograms");
         followTask = Bukkit.getServer().getScheduler().runTaskTimer(BetonQuest.getInstance(),

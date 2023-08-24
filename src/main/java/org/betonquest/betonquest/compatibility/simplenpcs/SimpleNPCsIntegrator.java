@@ -1,6 +1,7 @@
 package org.betonquest.betonquest.compatibility.simplenpcs;
 
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.compatibility.Compatibility;
 import org.betonquest.betonquest.compatibility.Integrator;
 import org.betonquest.betonquest.exceptions.HookException;
@@ -20,13 +21,10 @@ public class SimpleNPCsIntegrator implements Integrator {
 
     @Override
     public void hook() throws HookException {
-        simpleNPCsListener = new SimpleNPCsListener();
+        final BetonQuestLoggerFactory loggerFactory = BetonQuest.getInstance().getLoggerFactory();
+        simpleNPCsListener = new SimpleNPCsListener(loggerFactory, loggerFactory.create(SimpleNPCsListener.class));
 
-        if (Compatibility.getHooked().contains("EffectLib")) {
-            new SimpleNPCsParticle();
-        }
-
-        NPCHider.start();
+        NPCHider.start(loggerFactory.create(NPCHider.class));
         plugin.registerEvents("updatevisibility", UpdateVisibilityNowEvent.class);
 
         plugin.registerVariable("citizen", SimpleNPCsVariable.class);
@@ -35,14 +33,9 @@ public class SimpleNPCsIntegrator implements Integrator {
 
     @Override
     public void reload() {
-        if (Compatibility.getHooked().containsAll(Arrays.asList("SimpleNPCs", "EffectLib"))) {
-            SimpleNPCsParticle.reload();
-        }
-        if (Compatibility.getHooked().contains("SimpleNPCs")) {
-            simpleNPCsListener.reload();
-        }
+        simpleNPCsListener.reload();
         if (NPCHider.getInstance() != null) {
-            NPCHider.start();
+            NPCHider.start(BetonQuest.getInstance().getLoggerFactory().create(NPCHider.class));
         }
     }
 

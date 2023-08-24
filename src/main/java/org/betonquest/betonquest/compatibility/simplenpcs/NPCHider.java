@@ -4,8 +4,8 @@ import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.betonquest.betonquest.BetonQuest;
-import org.betonquest.betonquest.api.BetonQuestLogger;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
@@ -28,14 +28,15 @@ import java.util.Set;
 @SuppressWarnings("PMD.CommentRequired")
 public final class NPCHider extends BukkitRunnable implements Listener {
 
-    private static final BetonQuestLogger LOG = BetonQuestLogger.create();
+    private final BetonQuestLogger log;
 
     private static NPCHider instance;
 
     private final Map<Integer, Set<ConditionID>> npcs;
 
-    private NPCHider() {
+    private NPCHider(final BetonQuestLogger log) {
         super();
+        this.log = log;
         npcs = new HashMap<>();
         final int updateInterval = BetonQuest.getInstance().getPluginConfig().getInt("npc_hider_check_interval", 5 * 20);
         loadFromConfig();
@@ -46,11 +47,11 @@ public final class NPCHider extends BukkitRunnable implements Listener {
     /**
      * Starts (or restarts) the NPCHider. It loads the current configuration for hidden NPCs
      */
-    public static void start() {
+    public static void start(final BetonQuestLogger log) {
         if (instance != null) {
             instance.stop();
         }
-        instance = new NPCHider();
+        instance = new NPCHider(log);
     }
 
     /**
@@ -79,7 +80,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
                 try {
                     npcId = Integer.parseInt(npcIds);
                 } catch (final NumberFormatException e) {
-                    LOG.warn(cfgPackage, "NPC ID '" + npcIds + "' is not a valid number, in hide_npcs", e);
+                    log.warn(cfgPackage, "NPC ID '" + npcIds + "' is not a valid number, in hide_npcs", e);
                     continue;
                 }
                 final Set<ConditionID> conditions = new HashSet<>();
@@ -89,7 +90,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
                     try {
                         conditions.add(new ConditionID(cfgPackage, condition));
                     } catch (final ObjectNotFoundException e) {
-                        LOG.warn(cfgPackage, "Condition '" + condition + "' does not exist, in hide_npcs with ID " + npcIds, e);
+                        log.warn(cfgPackage, "Condition '" + condition + "' does not exist, in hide_npcs with ID " + npcIds, e);
                         continue npcs;
                     }
                 }

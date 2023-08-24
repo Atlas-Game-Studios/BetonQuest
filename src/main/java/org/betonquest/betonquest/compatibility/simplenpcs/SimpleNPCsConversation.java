@@ -2,6 +2,7 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 
 import com.github.arnhav.objects.SNPC;
 import com.github.juliarn.npc.NPC;
+import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.conversation.Conversation;
 import org.bukkit.Location;
@@ -14,8 +15,8 @@ public class SimpleNPCsConversation extends Conversation {
 
     private final SNPC npc;
 
-    public SimpleNPCsConversation(final OnlineProfile onlineProfile, final String conversationID, final Location location, final SNPC npc) {
-        super(onlineProfile, conversationID, location);
+    public SimpleNPCsConversation(final BetonQuestLogger log, final OnlineProfile onlineProfile, final String conversationID, final Location location, final SNPC npc) {
+        super(log, onlineProfile, conversationID, location);
         this.npc = npc;
     }
 

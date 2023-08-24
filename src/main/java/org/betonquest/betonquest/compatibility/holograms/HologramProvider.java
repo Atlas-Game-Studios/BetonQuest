@@ -164,7 +164,7 @@ public class HologramProvider implements Integrator {
         }
         // if SimpleNPCs is hooked, start SimpleNPCsHologram
         if (Compatibility.getHooked().contains("SimpleNPCs")) {
-            this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop();
+            this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop(loggerFactory, loggerFactory.create(SimpleNPCsHologramLoop.class));
         }
         new HologramListener();
     }
@@ -186,7 +186,7 @@ public class HologramProvider implements Integrator {
                 }
                 if (instance.simpleNPCsHologramLoop != null) {
                     this.simpleNPCsHologramLoop.close();
-                    this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop();
+                    this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop(loggerFactory, loggerFactory.create(SimpleNPCsHologramLoop.class));
                 }
             }
         }

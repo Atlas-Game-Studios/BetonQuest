@@ -5,7 +5,8 @@ import com.github.arnhav.api.NPCLeftClickEvent;
 import com.github.arnhav.api.NPCRightClickEvent;
 import com.github.arnhav.objects.SNPC;
 import org.betonquest.betonquest.BetonQuest;
-import org.betonquest.betonquest.api.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.conversation.CombatTagger;
@@ -27,7 +28,9 @@ import java.util.UUID;
 @SuppressWarnings("PMD.CommentRequired")
 public class SimpleNPCsListener implements Listener {
 
-    private static final BetonQuestLogger LOG = BetonQuestLogger.create();
+    private final BetonQuestLogger log;
+
+    private final BetonQuestLoggerFactory loggerFactory;
 
     private RightClickListener rightClick;
     private LeftClickListener leftClick;
@@ -38,7 +41,9 @@ public class SimpleNPCsListener implements Listener {
     /**
      * Initializes the listener
      */
-    public SimpleNPCsListener() {
+    public SimpleNPCsListener(final BetonQuestLoggerFactory loggerFactory, final BetonQuestLogger log) {
+        this.loggerFactory = loggerFactory;
+        this.log = log;
         reload();
     }
 
@@ -102,7 +107,7 @@ public class SimpleNPCsListener implements Listener {
             try {
                 Config.sendNotify(null, onlineProfile, "busy", "busy,error");
             } catch (final QuestRuntimeException exception) {
-                LOG.warn("The notify system was unable to play a sound for the 'busy' category. Error was: '" + exception.getMessage() + "'");
+                log.warn("The notify system was unable to play a sound for the 'busy' category. Error was: '" + exception.getMessage() + "'");
             }
             return;
         }
@@ -115,7 +120,7 @@ public class SimpleNPCsListener implements Listener {
         }
         if (assignment != null) {
             event.setCancelled(true);
-            new SimpleNPCsConversation(onlineProfile, assignment, snpc.getLocation(), snpc);
+            new SimpleNPCsConversation(log, onlineProfile, assignment, snpc.getLocation(), snpc);
         }
     }
 }
