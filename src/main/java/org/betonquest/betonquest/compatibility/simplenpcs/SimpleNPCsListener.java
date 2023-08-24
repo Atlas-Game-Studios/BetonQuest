@@ -106,7 +106,8 @@ public class SimpleNPCsListener implements Listener {
             }
             return;
         }
-        SNPC snpc = event.getNpc();
+        final SNPC snpc = event.getNpc();
+        if (snpc == null) return;
         final String npcId = String.valueOf(snpc.getId());
         String assignment = Config.getNpc(npcId);
         if ("true".equalsIgnoreCase(Config.getString("config.citizens_npcs_by_name")) && assignment == null) {
