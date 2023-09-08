@@ -319,7 +319,7 @@
     <dependency>
       <groupId>com.github.arnhav</groupId>
       <artifactId>SimpleNPCs</artifactId>
-      <version>1.0.7-SNAPSHOT</version>
+      <version>1.0.8-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 <!--    <dependency>-->
@@ -549,6 +549,10 @@
 <!--      <id>betonquest-bronet-releases</id>-->
 <!--      <url>https://repo.bronet.co/releases</url>-->
 <!--    </repository>-->
+    <repository>
+      <id>codemc-releases</id>
+      <url>https://repo.codemc.io/repository/maven-releases/</url>
+    </repository>
     <!--Atlas End-->
   </repositories>
 

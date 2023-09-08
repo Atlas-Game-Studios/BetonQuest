@@ -130,13 +130,12 @@ public final class NPCHider extends BukkitRunnable implements Listener {
 //            LOG.warn("NPCHider could not update visibility for npc " + npcID + ": No npc with this id found!");
             return;
         }
-        if (BetonQuest.simpleNPCs().isFinishedLoading()) {
-            final Set<ConditionID> conditions = npcs.get(npcID);
-            if (conditions == null || conditions.isEmpty() || !BetonQuest.conditions(onlineProfile, conditions)) {
-                npc.show(onlineProfile.getPlayer());
-            } else {
-                npc.hide(onlineProfile.getPlayer());
-            }
+        if (!BetonQuest.simpleNPCs().isFinishedLoading()) return;
+        final Set<ConditionID> conditions = npcs.get(npcID);
+        if (conditions == null || conditions.isEmpty() || !BetonQuest.conditions(onlineProfile, conditions)) {
+            npc.show(onlineProfile.getPlayer());
+        } else {
+            npc.hide(onlineProfile.getPlayer());
         }
     }
 
@@ -185,7 +184,7 @@ public final class NPCHider extends BukkitRunnable implements Listener {
         if (npc == null) {
             return false;
         }
-        return !npc.getNpc().isShownFor(onlineProfile.getPlayer());
+        return npc.getNpc().includesPlayer(onlineProfile.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

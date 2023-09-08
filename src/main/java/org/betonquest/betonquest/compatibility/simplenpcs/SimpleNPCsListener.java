@@ -4,6 +4,7 @@ import com.github.arnhav.api.NPCClickEvent;
 import com.github.arnhav.api.NPCLeftClickEvent;
 import com.github.arnhav.api.NPCRightClickEvent;
 import com.github.arnhav.objects.SNPC;
+import com.github.arnhav.util.LocationUtils;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
@@ -116,11 +117,11 @@ public class SimpleNPCsListener implements Listener {
         final String npcId = String.valueOf(snpc.getId());
         String assignment = Config.getNpc(npcId);
         if ("true".equalsIgnoreCase(Config.getString("config.citizens_npcs_by_name")) && assignment == null) {
-            assignment = Config.getNpc(snpc.getProfile().getName());
+            assignment = Config.getNpc(snpc.getProfile().name());
         }
         if (assignment != null) {
             event.setCancelled(true);
-            new SimpleNPCsConversation(log, onlineProfile, assignment, snpc.getLocation(), snpc);
+            new SimpleNPCsConversation(log, onlineProfile, assignment, LocationUtils.fromPosition(snpc.getLocation()), snpc);
         }
     }
 }

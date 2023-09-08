@@ -2,6 +2,7 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 
 import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
+import com.github.arnhav.util.LocationUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.Variable;
@@ -50,9 +51,9 @@ public class SimpleNPCsVariable extends Variable {
         switch (key) {
             case NAME:
             case FULL_NAME:
-                return npc.getProfile().getName();
+                return npc.getProfile().name();
             case LOCATION:
-                final Location loc = npc.getLocation();
+                final Location loc = LocationUtils.fromPosition(npc.getLocation());
                 return String.format("%.2f;%.2f;%.2f;%s;%.2f;%.2f",
                         loc.getX(),
                         loc.getY(),
