@@ -133,8 +133,10 @@ public final class NPCHider extends BukkitRunnable implements Listener {
         if (!BetonQuest.simpleNPCs().isFinishedLoading()) return;
         final Set<ConditionID> conditions = npcs.get(npcID);
         if (conditions == null || conditions.isEmpty() || !BetonQuest.conditions(onlineProfile, conditions)) {
+            if (isVisible(onlineProfile, npc)) return;
             npc.show(onlineProfile.getPlayer());
         } else {
+            if (!isVisible(onlineProfile, npc)) return;
             npc.hide(onlineProfile.getPlayer());
         }
     }
@@ -180,11 +182,11 @@ public final class NPCHider extends BukkitRunnable implements Listener {
      * @param npc           ID of the NPC
      * @return true if the NPC is visible to that player, false otherwise
      */
-    public boolean isInvisible(final OnlineProfile onlineProfile, final SNPC npc) {
+    public boolean isVisible(final OnlineProfile onlineProfile, final SNPC npc) {
         if (npc == null) {
             return false;
         }
-        return npc.getNpc().includesPlayer(onlineProfile.getPlayer());
+        return npc.isShownToPlayer(onlineProfile.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
