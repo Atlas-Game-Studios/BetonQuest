@@ -12,12 +12,10 @@ import org.betonquest.betonquest.database.Backup;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
 import org.betonquest.betonquest.id.ConditionID;
 import org.betonquest.betonquest.modules.config.Zipper;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -163,8 +161,14 @@ public final class Utils {
         if (item == null) {
             return false;
         }
-        return item.hasItemMeta() && item.getItemMeta().hasLore()
-                && item.getItemMeta().getLore().contains(Config.getMessage(Config.getLanguage(), "quest_item"));
+        // Atlas Start
+        if (!item.hasItemMeta()) return false;
+        final PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+        final NamespacedKey key = new NamespacedKey("atlas", "rarity");
+        return pdc.has(key) && pdc.get(key, PersistentDataType.STRING).equals("QUEST");
+        // Atlas End
+//        return item.hasItemMeta() && item.getItemMeta().hasLore()
+//                && item.getItemMeta().getLore().contains(Config.getMessage(Config.getLanguage(), "quest_item"));
     }
 
     /**

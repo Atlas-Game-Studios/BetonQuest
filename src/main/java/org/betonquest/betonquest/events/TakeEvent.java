@@ -38,9 +38,10 @@ public class TakeEvent extends AbstractTakeEvent {
             neededDeletions.put(onlineProfile.getProfileUUID(), Pair.of(questItem, deleteAmount));
 
             checkSelectedTypes(onlineProfile.getPlayer());
-            final String itemName = questItem.getName() == null
-                    ? new ItemStack(questItem.getMaterial()).getItemMeta().getDisplayName()
-                    : questItem.getName();
+//            final String itemName = questItem.getName() == null
+//                    ? new ItemStack(questItem.getMaterial()).getItemMeta().getDisplayName()
+//                    : questItem.getName();
+            final String itemName = questItem.getItem().toLowerCase().replace("_", " ");
             notifyPlayer(onlineProfile, itemName, deleteAmount - neededDeletions.get(onlineProfile.getProfileUUID()).getRight());
         }
         return null;

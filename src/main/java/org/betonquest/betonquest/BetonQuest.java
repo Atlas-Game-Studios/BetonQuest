@@ -1,5 +1,6 @@
 package org.betonquest.betonquest;
 
+import com.ags.atlasitemregistry.AtlasItemRegistryService;
 import com.github.arnhav.api.SimpleNPCService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.papermc.lib.PaperLib;
@@ -1417,9 +1418,15 @@ public class BetonQuest extends JavaPlugin {
         FreezeEvent.cleanup();
     }
 
+    // Atlas Start
     public static SimpleNPCService simpleNPCs() {
         return Bukkit.getServer().getServicesManager().load(SimpleNPCService.class);
     }
+
+    public static AtlasItemRegistryService itemRegistry() {
+        return Bukkit.getServer().getServicesManager().load(AtlasItemRegistryService.class);
+    }
+    // Atlas End
 
     /**
      * Returns the database instance

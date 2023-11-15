@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.Damageable;
 
 /**
  * To check durability on the item on a specific slot,
- * in opposite to {@link QuestItem#getDurability()}.
+ * in opposite to.
  */
 public class ItemDurabilityCondition extends Condition {
     /**

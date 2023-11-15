@@ -322,7 +322,13 @@
       <version>1.0.9-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-<!--    <dependency>-->
+    <dependency>
+      <groupId>com.ags</groupId>
+      <artifactId>AtlasItemRegistry</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <!--    <dependency>-->
 <!--      <groupId>co.bronet.machinations</groupId>-->
 <!--      <artifactId>Machinations</artifactId>-->
 <!--      <version>5.5.2047-RELEASE</version>-->
@@ -549,6 +555,11 @@
 <!--      <id>betonquest-bronet-releases</id>-->
 <!--      <url>https://repo.bronet.co/releases</url>-->
 <!--    </repository>-->
+    <repository>
+      <id>atlasmc-repository-maven</id>
+      <name>Atlas MC Repository</name>
+      <url>https://repo.mc-atlas.com/maven</url>
+    </repository>
     <repository>
       <id>codemc-releases</id>
       <url>https://repo.codemc.io/repository/maven-releases/</url>

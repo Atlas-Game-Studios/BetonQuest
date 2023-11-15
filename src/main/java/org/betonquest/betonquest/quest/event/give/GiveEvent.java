@@ -68,9 +68,10 @@ public class GiveEvent implements Event {
             final QuestItem questItem = item.getItem();
             final int amount = item.getAmount().getInt(profile);
             giveItems(profile, player, questItem, amount);
-            final String questItemName = questItem.getName() == null
-                    ? questItem.getMaterial().toString().toLowerCase(Locale.ROOT).replace("_", " ")
-                    : questItem.getName();
+//            final String questItemName = questItem.getName() == null
+//                    ? questItem.getMaterial().toString().toLowerCase(Locale.ROOT).replace("_", " ")
+//                    : questItem.getName();
+            final String questItemName = questItem.getItem().toLowerCase().replace("_", " ");
             itemsGivenSender.sendNotification(profile, questItemName, String.valueOf(amount));
         }
     }

@@ -50,14 +50,16 @@ public class ItemVariable extends Variable {
             type = Type.AMOUNT;
         } else if ("name".equals(argument)) {
             type = Type.NAME;
-        } else if (argument.startsWith("lore:")) {
-            type = Type.LORE;
-            try {
-                amount = Integer.parseInt(argument.substring(5));
-            } catch (final NumberFormatException e) {
-                throw new InstructionParseException("Could not parse line", e);
-            }
-        } else {
+        }
+//        else if (argument.startsWith("lore:")) {
+//            type = Type.LORE;
+//            try {
+//                amount = Integer.parseInt(argument.substring(5));
+//            } catch (final NumberFormatException e) {
+//                throw new InstructionParseException("Could not parse line", e);
+//            }
+//        }
+        else {
             throw new InstructionParseException(String.format("Unknown argument type: '%s'",
                     argument));
         }
@@ -74,14 +76,14 @@ public class ItemVariable extends Variable {
         return switch (type) {
             case AMOUNT -> Integer.toString(itemAmount(profile));
             case LEFT -> Integer.toString(amount - itemAmount(profile));
-            case NAME -> conditionalRaw(questItem.getName());
-            case LORE -> {
-                try {
-                    yield conditionalRaw(questItem.getLore().get(amount));
-                } catch (final IndexOutOfBoundsException e) {
-                    yield "";
-                }
-            }
+            case NAME -> conditionalRaw(questItem.getItem());
+//            case LORE -> {
+//                try {
+//                    yield conditionalRaw(questItem.getLore().get(amount));
+//                } catch (final IndexOutOfBoundsException e) {
+//                    yield "";
+//                }
+//            }
         };
     }
 
@@ -116,7 +118,8 @@ public class ItemVariable extends Variable {
     }
 
     private enum Type {
-        AMOUNT, LEFT, NAME, LORE
+        AMOUNT, LEFT, NAME
+//        , LORE
     }
 
 }
