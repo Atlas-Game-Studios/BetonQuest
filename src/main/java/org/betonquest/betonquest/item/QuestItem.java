@@ -383,9 +383,9 @@ public class QuestItem {
         if (item == null) {
             return false;
         }
-        ItemStack itemStack = BetonQuest.itemRegistry().getItem(this.item);
+        final ItemStack itemStack = BetonQuest.itemRegistry().getItem(this.item);
         if (itemStack == null) return false;
-        return itemStack.equals(item);
+        return itemStack.isSimilar(item);
 //        if (!selector.match(item.getType())) {
 //            return false;
 //        }
