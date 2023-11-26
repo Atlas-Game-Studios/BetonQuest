@@ -175,7 +175,7 @@ public class Backpack implements Listener {
             this.showJournal = showJournalInBackpack && !Journal.hasJournal(onlineProfile);
             this.backpackItems = playerData.getBackpack();
             if (showJournal) {
-                backpackItems.add(0, playerData.getJournal().getAsItem());
+//                backpackItems.add(0, playerData.getJournal().getAsItem());
             }
             this.pages = (int) Math.ceil(backpackItems.size() / 45F);
             this.pageOffset = (page - 1) * 45;
