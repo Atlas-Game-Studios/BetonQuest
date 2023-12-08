@@ -9,12 +9,13 @@ authors: [ Wolf2323, SaltyAimbOtter, seyfahni, joblo2213, bundabrg, Co0sh, Tyrri
 depend:
   - AtlasItemRegistry
 softdepend:
+  - SimpleNPCs
+  - SimpleMagic
   - Skript
   - MMOLib
   - MMOCore
   - MMOItems
   - Citizens
-  - SimpleNPCs
   - MythicMobs
   - Vault
   - EffectLib

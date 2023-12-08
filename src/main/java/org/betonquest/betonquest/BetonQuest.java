@@ -2,6 +2,8 @@ package org.betonquest.betonquest;
 
 import com.ags.atlasitemregistry.AtlasItemRegistryService;
 import com.github.arnhav.api.SimpleNPCService;
+import com.mc_atlas.simplemagic.SimpleMagic;
+import com.mc_atlas.simplemagic.api.SimpleMagicService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -1425,6 +1427,10 @@ public class BetonQuest extends JavaPlugin {
 
     public static AtlasItemRegistryService itemRegistry() {
         return Bukkit.getServer().getServicesManager().load(AtlasItemRegistryService.class);
+    }
+
+    public static SimpleMagicService simpleMagic() {
+        return Bukkit.getServer().getServicesManager().load(SimpleMagic.class);
     }
     // Atlas End
 

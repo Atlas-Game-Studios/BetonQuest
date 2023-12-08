@@ -50,8 +50,9 @@ sounds:
 cmd_blacklist:
   - spawn
 hook:
-  citizens: true
   simplenpcs: true
+  simplemagic: true
+  citizens: true
   mythicmobs: true
   vault: true
   worldguard: true

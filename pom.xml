@@ -328,6 +328,13 @@
       <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.mc_atlas</groupId>
+      <artifactId>SimpleMagic</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!--    <dependency>-->
 <!--      <groupId>co.bronet.machinations</groupId>-->
 <!--      <artifactId>Machinations</artifactId>-->

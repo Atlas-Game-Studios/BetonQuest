@@ -27,6 +27,7 @@ import org.betonquest.betonquest.compatibility.protocollib.ProtocolLibIntegrator
 import org.betonquest.betonquest.compatibility.quests.QuestsIntegrator;
 import org.betonquest.betonquest.compatibility.redischat.RedisChatIntegrator;
 import org.betonquest.betonquest.compatibility.shopkeepers.ShopkeepersIntegrator;
+import org.betonquest.betonquest.compatibility.simplemagic.SimpleMagicIntegrator;
 import org.betonquest.betonquest.compatibility.simplenpcs.SimpleNPCsIntegrator;
 import org.betonquest.betonquest.compatibility.skillapi.SkillAPIIntegrator;
 import org.betonquest.betonquest.compatibility.skript.SkriptIntegrator;
@@ -217,9 +218,12 @@ public class Compatibility implements Listener {
     }
 
     private void registerCompatiblePlugins() {
+        // Atlas Start
+        register("SimpleNPCs", SimpleNPCsIntegrator.class);
+        register("SimpleMagic", SimpleMagicIntegrator.class);
+        // Atlas End
         register("MythicMobs", MythicMobsIntegrator.class);
         register("Citizens", CitizensIntegrator.class);
-        register("SimpleNPCs", SimpleNPCsIntegrator.class);
         register("Vault", VaultIntegrator.class);
         register("Skript", SkriptIntegrator.class);
         register("WorldGuard", WorldGuardIntegrator.class);
