@@ -492,7 +492,7 @@ public class QuestItem {
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public ItemStack generate(final int stackSize, final Profile profile) {
         ItemStack itemStack = BetonQuest.itemRegistry().getItem(item);
-        if (itemStack == null) itemStack = new ItemStack(Material.DIRT);
+        if (itemStack == null) itemStack = new ItemStack(Material.BARRIER);
         itemStack.setAmount(stackSize);
         return itemStack;
 //        // Try resolve material directly
