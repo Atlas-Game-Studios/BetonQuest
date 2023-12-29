@@ -4,6 +4,7 @@ import com.github.arnhav.objects.SNPC;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.conversation.Conversation;
+import org.betonquest.betonquest.id.ConversationID;
 import org.bukkit.Location;
 
 /**
@@ -14,7 +15,7 @@ public class SimpleNPCsConversation extends Conversation {
 
     private final SNPC npc;
 
-    public SimpleNPCsConversation(final BetonQuestLogger log, final OnlineProfile onlineProfile, final String conversationID, final Location location, final SNPC npc) {
+    public SimpleNPCsConversation(final BetonQuestLogger log, final OnlineProfile onlineProfile, final ConversationID conversationID, final Location location, final SNPC npc) {
         super(log, onlineProfile, conversationID, location);
         this.npc = npc;
     }
