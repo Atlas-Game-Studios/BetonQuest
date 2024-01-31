@@ -14,6 +14,7 @@ import org.betonquest.betonquest.compatibility.holograms.HologramWrapper;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 import org.betonquest.betonquest.utils.location.VectorData;
+import org.betonquest.betonquest.variables.GlobalVariableResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,15 +33,16 @@ import java.util.Map;
  * Hides and shows holograms to players at an NPC's location. Based on conditions.
  */
 public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
-
     /**
      * The task that lets holograms follow NPCs.
      */
     private final BukkitTask followTask;
+
     /**
      * List of all {@link NPCHologram}s.
      */
     private final List<NPCHologram> npcHolograms;
+
     /**
      * List of all {@link HologramWrapper}s.
      */
@@ -88,7 +90,8 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
             if (npc == null) {
                 npcBetonHolograms.put(npcID, null);
             } else {
-                final BetonHologram hologram = HologramProvider.getInstance().createHologram(LocationUtils.fromPosition(npc.getLocation()).clone().add(vector));
+                final BetonHologram hologram = HologramProvider.getInstance()
+                        .createHologram(LocationUtils.fromPosition(npc.getLocation()).clone().add(vector));
                 npcBetonHolograms.put(npcID, hologram);
                 holograms.add(hologram);
             }
@@ -101,7 +104,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
     private List<Integer> getNPCs(final QuestPackage pack, final ConfigurationSection section) throws InstructionParseException {
         final List<Integer> npcIDs = new ArrayList<>();
         for (final String stringID : section.getStringList("npcs")) {
-            final String subst = pack.subst(stringID);
+            final String subst = GlobalVariableResolver.resolve(pack, stringID);
             try {
                 npcIDs.add(Integer.parseInt(subst));
             } catch (final NumberFormatException e) {
@@ -111,8 +114,9 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
         return npcIDs;
     }
 
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private void updateHologram(final NPCHologram npcHologram) {
-        npcHologram.npcHolograms.entrySet().forEach(entry -> {
+        npcHologram.npcHolograms().entrySet().forEach(entry -> {
                     final Integer npcID = entry.getKey();
                     final BetonHologram hologram = entry.getValue();
                     final SNPC npc = SimpleNPCs.npcManager().getNPC(npcID);
@@ -120,10 +124,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                         if (hologram == null) {
                             return;
                         }
-                        hologram.hideAll();
-                        entry.setValue(null);
-                        npcHologram.holograms().remove(hologram);
-                        hologram.delete();
+                        hologram.disable();
                     } else {
                         final Location location = LocationUtils.fromPosition(npc.getLocation()).clone().add(npcHologram.vector());
                         if (hologram == null) {
@@ -132,6 +133,9 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                             npcHologram.holograms().add(newHologram);
                             updateHologram(newHologram);
                         } else {
+                            if (hologram.isDisabled()) {
+                                hologram.enable();
+                            }
                             hologram.move(location);
                         }
                     }
@@ -143,8 +147,8 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
         holograms.stream()
                 .filter(hologramWrapper -> hologramWrapper.holograms().contains(hologram))
                 .forEach(hologramWrapper -> {
-                    hologramWrapper.updateVisibility();
                     hologramWrapper.initialiseContent();
+                    hologramWrapper.updateVisibility();
                 });
     }
 
