@@ -4,7 +4,6 @@ import com.github.arnhav.api.NPCClickEvent;
 import com.github.arnhav.api.NPCLeftClickEvent;
 import com.github.arnhav.api.NPCRightClickEvent;
 import com.github.arnhav.objects.SNPC;
-import com.github.arnhav.util.LocationUtils;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
@@ -152,7 +151,7 @@ public class SimpleNPCsListener implements Listener {
         } else {
             event.setCancelled(true);
             new SimpleNPCsConversation(loggerFactory.create(SimpleNPCsConversation.class), onlineProfile,
-                    conversationID, LocationUtils.fromPosition(event.getNpc().getLocation()), event.getNpc());
+                    conversationID, npc.getBukkitLocation(), event.getNpc());
         }
     }
 

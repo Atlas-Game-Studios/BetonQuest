@@ -2,7 +2,6 @@ package org.betonquest.betonquest.compatibility.simplenpcs;
 
 import com.github.arnhav.SimpleNPCs;
 import com.github.arnhav.objects.SNPC;
-import com.github.arnhav.util.LocationUtils;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
@@ -91,7 +90,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                 npcBetonHolograms.put(npcID, null);
             } else {
                 final BetonHologram hologram = HologramProvider.getInstance()
-                        .createHologram(LocationUtils.fromPosition(npc.getLocation()).clone().add(vector));
+                        .createHologram(npc.getBukkitLocation().add(vector));
                 npcBetonHolograms.put(npcID, hologram);
                 holograms.add(hologram);
             }
@@ -126,7 +125,7 @@ public class SimpleNPCsHologramLoop extends HologramLoop implements Listener {
                         }
                         hologram.disable();
                     } else {
-                        final Location location = LocationUtils.fromPosition(npc.getLocation()).clone().add(npcHologram.vector());
+                        final Location location = npc.getBukkitLocation().add(npcHologram.vector());
                         if (hologram == null) {
                             final BetonHologram newHologram = HologramProvider.getInstance().createHologram(location);
                             entry.setValue(newHologram);

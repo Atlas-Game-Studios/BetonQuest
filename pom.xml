@@ -317,7 +317,7 @@
     </dependency>
     <!-- Atlas Start -->
     <dependency>
-      <groupId>com.github.arnhav</groupId>
+      <groupId>com.ags</groupId>
       <artifactId>SimpleNPCs</artifactId>
       <version>1.0.9-SNAPSHOT</version>
       <scope>provided</scope>
