@@ -58,7 +58,7 @@ public class HologramProvider implements Integrator {
     /**
      * The current {@link CitizensHologramLoop}.
      */
-    private CitizensHologramLoop citizensHologramLoop;
+//    private CitizensHologramLoop citizensHologramLoop;
 
     /**
      * The current {@link SimpleNPCsHologramLoop}
@@ -159,9 +159,9 @@ public class HologramProvider implements Integrator {
     public void hook() throws HookException {
         final BetonQuestLoggerFactory loggerFactory = BetonQuest.getInstance().getLoggerFactory();
         this.locationHologramLoop = new LocationHologramLoop(loggerFactory, loggerFactory.create(LocationHologramLoop.class));
-        if (Compatibility.getHooked().contains("Citizens")) {
-            this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
-        }
+//        if (Compatibility.getHooked().contains("Citizens")) {
+//            this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
+//        }
         // if SimpleNPCs is hooked, start SimpleNPCsHologram
         if (Compatibility.getHooked().contains("SimpleNPCs")) {
             this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop(loggerFactory, loggerFactory.create(SimpleNPCsHologramLoop.class));
@@ -180,10 +180,10 @@ public class HologramProvider implements Integrator {
                 instance.integrator = ATTEMPTED_INTEGRATIONS.get(0);
                 final BetonQuestLoggerFactory loggerFactory = BetonQuest.getInstance().getLoggerFactory();
                 instance.locationHologramLoop = new LocationHologramLoop(loggerFactory, loggerFactory.create(LocationHologramLoop.class));
-                if (instance.citizensHologramLoop != null) {
-                    this.citizensHologramLoop.close();
-                    this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
-                }
+//                if (instance.citizensHologramLoop != null) {
+//                    this.citizensHologramLoop.close();
+//                    this.citizensHologramLoop = new CitizensHologramLoop(loggerFactory, loggerFactory.create(CitizensHologramLoop.class));
+//                }
                 if (instance.simpleNPCsHologramLoop != null) {
                     this.simpleNPCsHologramLoop.close();
                     this.simpleNPCsHologramLoop = new SimpleNPCsHologramLoop(loggerFactory, loggerFactory.create(SimpleNPCsHologramLoop.class));
@@ -198,10 +198,10 @@ public class HologramProvider implements Integrator {
             if (instance.locationHologramLoop != null) {
                 HologramRunner.cancel();
                 instance.locationHologramLoop = null;
-                if (instance.citizensHologramLoop != null) {
-                    instance.citizensHologramLoop.close();
-                    instance.citizensHologramLoop = null;
-                }
+//                if (instance.citizensHologramLoop != null) {
+//                    instance.citizensHologramLoop.close();
+//                    instance.citizensHologramLoop = null;
+//                }
                 if (instance.simpleNPCsHologramLoop != null) {
                     instance.simpleNPCsHologramLoop.close();
                     instance.simpleNPCsHologramLoop = null;
