@@ -168,8 +168,12 @@ public class QuestItem {
     @SuppressWarnings({"PMD.NcssCount", "PMD.NPathComplexity"})
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public static String itemToString(final ItemStack item) {
-        BetonQuest.getInstance().getLogger().warning("Item saving is deprecated, use MythicMobs to create items!");
-        return "";
+        if (item == null) return "";
+        if (!item.hasItemMeta()) return item.getType().toString();
+        final PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+        final NamespacedKey key = new NamespacedKey("atlas", "material");
+        if (!pdc.has(key)) return item.getType().toString();
+        return pdc.get(key, PersistentDataType.STRING);
 //        String durability = "";
 //        String name = "";
 //        String lore = "";
