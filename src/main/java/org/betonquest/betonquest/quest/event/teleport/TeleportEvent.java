@@ -6,6 +6,10 @@ import org.betonquest.betonquest.conversation.Conversation;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 import org.betonquest.betonquest.utils.location.CompoundLocation;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * Teleports the player to specified location
@@ -31,7 +35,14 @@ public class TeleportEvent implements Event {
         if (conv != null) {
             conv.endConversation();
         }
+        if (profile.getOnlineProfile().isEmpty()) return;
+        final Player player = profile.getOnlineProfile().get().getPlayer();
         final Location playerLocation = location.getLocation(profile);
-        profile.getOnlineProfile().get().getPlayer().teleport(playerLocation);
+        final List<Entity> passengers = player.getPassengers();
+        player.eject();
+        player.teleportAsync(playerLocation).thenAccept(b -> {
+            if (passengers.isEmpty()) return;
+            player.addPassenger(passengers.get(0));
+        });
     }
 }
