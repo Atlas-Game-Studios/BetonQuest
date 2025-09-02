@@ -67,6 +67,7 @@ public class TopXObject {
     /**
      * Updates the currently stored entries with data from the database.
      */
+    @SuppressWarnings("NullAway")
     public void queryDB() {
         entries.clear();
         final Connector con = new Connector();

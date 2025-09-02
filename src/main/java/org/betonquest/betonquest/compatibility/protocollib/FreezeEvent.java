@@ -46,6 +46,7 @@ public class FreezeEvent implements OnlineEvent {
         STANDS.forEach((uuid, armorStand) -> armorStand.remove());
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public void execute(final OnlineProfile profile) throws QuestException {
         final int ticks = ticksVar.getValue(profile).intValue();

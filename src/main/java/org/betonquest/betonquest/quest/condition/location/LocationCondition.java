@@ -33,6 +33,7 @@ public class LocationCondition implements OnlineCondition {
         this.range = range;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public boolean check(final OnlineProfile profile) throws QuestException {
         final Location location = loc.getValue(profile);

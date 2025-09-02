@@ -87,6 +87,7 @@ public record HologramWrapper(BetonQuestLogger log, QuestTypeApi questTypeApi, P
      * @param hologram The hologram to check the distance from.
      * @return {@code true} if the player is out of range, {@code false} otherwise.
      */
+    @SuppressWarnings("NullAway")
     public boolean isPlayerOutOfRange(final OnlineProfile profile, final BetonHologram hologram) {
         final int maxRange = getMaxRangeFromVariable(profile);
         if (maxRange > 0) {

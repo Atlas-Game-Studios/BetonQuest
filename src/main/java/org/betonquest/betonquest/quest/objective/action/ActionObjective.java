@@ -98,7 +98,7 @@ public class ActionObjective extends Objective implements Listener {
      *
      * @param event the event
      */
-    @SuppressWarnings("PMD.CognitiveComplexity")
+    @SuppressWarnings({"PMD.CognitiveComplexity", "NullAway"})
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(final PlayerInteractEvent event) {
         qeHandler.handle(() -> {

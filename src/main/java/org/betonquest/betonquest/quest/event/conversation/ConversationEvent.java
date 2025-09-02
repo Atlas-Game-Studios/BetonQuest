@@ -43,6 +43,7 @@ public class ConversationEvent implements OnlineEvent {
         this.conversation = conversation;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public void execute(final OnlineProfile profile) throws QuestException {
         final Pair<ConversationID, String> conversation = this.conversation.getValue(profile);

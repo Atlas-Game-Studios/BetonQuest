@@ -46,6 +46,7 @@ public class LocationVariable implements OnlineVariable {
         this.decimalPlaces = decimalPlaces;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public String getValue(final OnlineProfile onlineProfile) throws QuestException {
         return mode.getFormattedLocation(onlineProfile.getPlayer().getLocation(), decimalPlaces.getValue(onlineProfile).intValue());

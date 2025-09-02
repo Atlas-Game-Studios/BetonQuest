@@ -82,6 +82,7 @@ public class PartyEvent implements OnlineEvent {
         }
     }
 
+    @SuppressWarnings("NullAway")
     private Set<OnlineProfile> getMemberList(final OnlineProfile profile) throws QuestException {
         final int toExecute = amount != null ? amount.getValue(profile).intValue() : -1;
         final Map<OnlineProfile, Double> members = Utils.getParty(questTypeApi, profileProvider.getOnlineProfiles(),

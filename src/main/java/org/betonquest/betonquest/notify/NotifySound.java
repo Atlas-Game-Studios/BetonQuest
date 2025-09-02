@@ -128,6 +128,7 @@ class NotifySound {
         };
     }
 
+    @SuppressWarnings("NullAway")
     private Location getLocation(final OnlineProfile onlineProfile, @Nullable final Variable<Location> variableLocation, @Nullable final Variable<Vector> playerOffset, @Nullable final Float playerOffsetDistance) throws QuestException {
         final Location location = variableLocation == null ? onlineProfile.getPlayer().getLocation() : variableLocation.getValue(onlineProfile);
 
@@ -141,12 +142,14 @@ class NotifySound {
         return location;
     }
 
+    @SuppressWarnings("NullAway")
     private Location getLocationRelativeDistance(final Location location, final Player player, final Float playerOffsetDistance) {
         final Vector directionVector = location.toVector().subtract(player.getLocation().toVector());
         directionVector.normalize().multiply(playerOffsetDistance);
         return player.getLocation().add(directionVector);
     }
 
+    @SuppressWarnings("NullAway")
     private Location getLocationRelativeVector(final Location location, final Player player, final Profile profile, final Variable<Vector> playerOffset) throws QuestException {
         final Vector relative = playerOffset.getValue(profile);
         final Location playerLoc = player.getLocation();

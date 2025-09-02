@@ -7,6 +7,7 @@ import org.betonquest.betonquest.api.quest.QuestException;
 /**
  * The type of the {@link PlayerNameVariable}.
  */
+@SuppressWarnings("NullAway")
 public enum PlayerNameType {
     /**
      * The player's name.

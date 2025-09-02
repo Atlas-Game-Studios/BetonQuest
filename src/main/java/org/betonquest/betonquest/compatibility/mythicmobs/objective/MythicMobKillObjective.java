@@ -111,6 +111,7 @@ public class MythicMobKillObjective extends CountingObjective implements Listene
         }
     }
 
+    @SuppressWarnings("NullAway")
     private void executeForEveryoneInRange(final MythicMobDeathEvent event, final double range, final NamespacedKey key) throws QuestException {
         final Location center = BukkitAdapter.adapt(event.getMob().getLocation());
         for (final Player player : center.getWorld().getPlayers()) {
