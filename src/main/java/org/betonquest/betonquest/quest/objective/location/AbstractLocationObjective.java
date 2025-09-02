@@ -67,6 +67,7 @@ public abstract class AbstractLocationObjective extends Objective implements Lis
      *
      * @param event the PlayerJoinEvent to be used in the method
      */
+    @SuppressWarnings("NullAway")
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(final PlayerJoinEvent event) {
         checkLocation(event.getPlayer(), event.getPlayer().getLocation());
@@ -87,6 +88,7 @@ public abstract class AbstractLocationObjective extends Objective implements Lis
      *
      * @param event the PlayerDeathEvent to be used in the method
      */
+    @SuppressWarnings("NullAway")
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(final PlayerDeathEvent event) {
         checkLocation(event.getEntity(), event.getEntity().getLocation());

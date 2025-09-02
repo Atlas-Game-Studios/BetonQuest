@@ -486,6 +486,7 @@ public class BetonQuest extends JavaPlugin implements BetonQuestApi, LanguagePro
         ).forEach(listener -> pluginManager.registerEvents(listener, this));
     }
 
+    @SuppressWarnings("NullAway")
     private void registerCommands(final AccumulatingReceiverSelector receiverSelector, final HistoryHandler debugHistoryHandler) {
         final QuestCommand questCommand = new QuestCommand(loggerFactory, loggerFactory.create(QuestCommand.class),
                 configAccessorFactory, new PlayerLogWatcher(receiverSelector), debugHistoryHandler,

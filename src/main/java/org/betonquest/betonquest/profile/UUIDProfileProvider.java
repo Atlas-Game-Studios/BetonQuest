@@ -43,6 +43,7 @@ public class UUIDProfileProvider implements ProfileProvider {
                 return player.getUniqueId();
             }
 
+            @SuppressWarnings("NullAway")
             @Override
             public String getProfileName() {
                 return player.getName();

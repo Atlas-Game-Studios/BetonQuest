@@ -225,6 +225,7 @@ public final class Utils {
                 .collect(Collectors.toMap(Pair::left, Pair::right));
     }
 
+    @SuppressWarnings("NullAway")
     private static double getDistanceSquared(final OnlineProfile profile, final Location loc) {
         try {
             return profile.getPlayer().getLocation().distanceSquared(loc);

@@ -7,6 +7,7 @@ import org.bukkit.util.Vector;
 /**
  * Represents the type of direction how the given vector should get rotated.
  */
+@SuppressWarnings("NullAway")
 public enum VectorDirection {
     /**
      * The vector is absolute and won't get rotated.

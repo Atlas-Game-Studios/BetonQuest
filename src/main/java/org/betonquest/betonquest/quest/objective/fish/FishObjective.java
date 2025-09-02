@@ -69,7 +69,7 @@ public class FishObjective extends CountingObjective implements Listener {
             return;
         }
         final OnlineProfile onlineProfile = profileProvider.getProfile(event.getPlayer());
-        if (!containsPlayer(onlineProfile) || event.getCaught() == null || event.getCaught().getType() != EntityType.DROPPED_ITEM) {
+        if (!containsPlayer(onlineProfile) || event.getCaught() == null || event.getCaught().getType() != EntityType.ITEM) {
             return;
         }
         qeHandler.handle(() -> {

@@ -24,6 +24,7 @@ public class BiomeCondition implements OnlineCondition {
         this.biome = biome;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public boolean check(final OnlineProfile profile) throws QuestException {
         return profile.getPlayer().getLocation().getBlock().getBiome() == biome;

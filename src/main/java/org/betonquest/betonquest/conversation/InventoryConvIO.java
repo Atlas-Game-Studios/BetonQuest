@@ -113,6 +113,7 @@ public class InventoryConvIO implements Listener, ConversationIO {
      * @param printMessages        whether to print messages
      * @param componentLineWrapper the component line wrapper
      */
+    @SuppressWarnings("NullAway")
     public InventoryConvIO(final Conversation conv, final OnlineProfile onlineProfile, final BetonQuestLogger log,
                            final QuestPackageManager packManager, final ConversationColors colors,
                            final boolean showNumber, final boolean showNPCText, final boolean printMessages,

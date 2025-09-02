@@ -28,7 +28,7 @@ public class ArmorRatingCondition implements OnlineCondition {
 
     @Override
     public boolean check(final OnlineProfile profile) throws QuestException {
-        final AttributeInstance genericArmor = profile.getPlayer().getAttribute(Attribute.GENERIC_ARMOR);
+        final AttributeInstance genericArmor = profile.getPlayer().getAttribute(Attribute.ARMOR);
         if (genericArmor == null) {
             throw new QuestException("Could not get the generic armor attribute of the player.");
         }

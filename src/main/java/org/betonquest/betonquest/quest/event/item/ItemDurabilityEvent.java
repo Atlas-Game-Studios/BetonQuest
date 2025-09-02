@@ -39,7 +39,7 @@ public class ItemDurabilityEvent implements OnlineEvent {
     private final Variable<Number> amount;
 
     /**
-     * To ignore {@link ItemMeta#isUnbreakable()} and {@link Enchantment#DURABILITY}.
+     * To ignore {@link ItemMeta#isUnbreakable()} and {@link Enchantment#UNBREAKING}.
      */
     private final boolean ignoreUnbreakable;
 
@@ -130,7 +130,7 @@ public class ItemDurabilityEvent implements OnlineEvent {
         if (ignoreUnbreakable) {
             return damageDifference;
         }
-        final int level = meta.getEnchantLevel(Enchantment.DURABILITY);
+        final int level = meta.getEnchantLevel(Enchantment.UNBREAKING);
         if (level == 0) {
             return damageDifference;
         }

@@ -25,6 +25,7 @@ public class FacingCondition implements OnlineCondition {
         this.direction = direction;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public boolean check(final OnlineProfile profile) throws QuestException {
         final Location playerLocation = profile.getPlayer().getLocation();

@@ -158,7 +158,7 @@ public class MenuConvIO extends ChatConvIO {
 
             stand.setGravity(false);
             stand.setVisible(false);
-            final AttributeInstance attribute = stand.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            final AttributeInstance attribute = stand.getAttribute(Attribute.MAX_HEALTH);
             if (attribute != null) {
                 attribute.setBaseValue(0);
             }
@@ -196,6 +196,7 @@ public class MenuConvIO extends ChatConvIO {
      * @param player the player to get the location for
      * @return the location on the top of the block below the player
      */
+    @SuppressWarnings("NullAway")
     private Location getBlockBelowPlayer(final Player player) {
         if (player.isFlying()) {
             return player.getLocation();

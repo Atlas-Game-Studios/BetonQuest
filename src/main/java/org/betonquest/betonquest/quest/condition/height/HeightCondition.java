@@ -24,6 +24,7 @@ public class HeightCondition implements OnlineCondition {
         this.height = height;
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public boolean check(final OnlineProfile profile) throws QuestException {
         return profile.getPlayer().getLocation().getY() < height.getValue(profile).doubleValue();
