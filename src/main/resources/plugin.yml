@@ -39,6 +39,7 @@ softdepend:
   - Train_Carts
   - FancyNpcs
   - ZNPCsPlus
+  - SimpleNPCs
 commands:
   journal:
     description: Adds journal to your inventory

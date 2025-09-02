@@ -47,10 +47,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- Atlas -->
     <dependency>
-      <groupId>io.papermc</groupId>
-      <artifactId>paperlib</artifactId>
-      <version>1.0.8</version>
+      <groupId>com.ags</groupId>
+      <artifactId>SimpleNPCs</artifactId>
+      <version>1.0.9-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- from enginehub repository -->
@@ -497,6 +500,12 @@
       <id>maven_central</id>
       <name>Maven Central</name>
       <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+
+    <!-- Atlas -->
+    <repository>
+      <id>atlasmc-repo</id>
+      <url>https://repo.mc-atlas.com/maven</url>
     </repository>
   </repositories>
 
