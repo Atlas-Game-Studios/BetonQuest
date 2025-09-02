@@ -26,6 +26,8 @@ import org.betonquest.betonquest.compatibility.mythicmobs.MythicMobsIntegratorFa
 import org.betonquest.betonquest.compatibility.npc.citizens.CitizensIntegratorFactory;
 import org.betonquest.betonquest.compatibility.npc.fancynpcs.FancyNpcsIntegrator;
 import org.betonquest.betonquest.compatibility.npc.fancynpcs.FancyNpcsIntegratorFactory;
+import org.betonquest.betonquest.compatibility.npc.simplenpcs.SimpleNPCsIntegrator;
+import org.betonquest.betonquest.compatibility.npc.simplenpcs.SimpleNPCsIntegratorFactory;
 import org.betonquest.betonquest.compatibility.npc.znpcsplus.ZNPCsPlusIntegrator;
 import org.betonquest.betonquest.compatibility.npc.znpcsplus.ZNPCsPlusIntegratorFactory;
 import org.betonquest.betonquest.compatibility.placeholderapi.PlaceholderAPIIntegratorFactory;
@@ -267,6 +269,9 @@ public class Compatibility implements Listener {
         register("Train_Carts", new TrainCartsIntegratorFactory());
         register(FancyNpcsIntegrator.PREFIX, new FancyNpcsIntegratorFactory());
         register(ZNPCsPlusIntegrator.PREFIX, new ZNPCsPlusIntegratorFactory());
+
+        // Atlas
+        register(SimpleNPCsIntegrator.PREFIX, new SimpleNPCsIntegratorFactory());
     }
 
     private void register(final String name, final IntegratorFactory integrator) {
