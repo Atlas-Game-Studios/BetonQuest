@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.compatibility.atlasitemregistry.AtlasItemIntegratorFactory;
 import org.betonquest.betonquest.compatibility.auraskills.AuraSkillsIntegratorFactory;
 import org.betonquest.betonquest.compatibility.brewery.BreweryIntegratorFactory;
 import org.betonquest.betonquest.compatibility.denizen.DenizenIntegratorFactory;
@@ -271,6 +272,7 @@ public class Compatibility implements Listener {
 
         // Atlas
         register(SimpleNPCsIntegrator.PREFIX, new SimpleNPCsIntegratorFactory());
+        register("AtlasItemRegistry", new AtlasItemIntegratorFactory());
     }
 
     private void register(final String name, final IntegratorFactory integrator) {
