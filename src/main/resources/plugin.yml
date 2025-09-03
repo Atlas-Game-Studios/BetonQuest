@@ -40,6 +40,7 @@ softdepend:
   - FancyNpcs
   - ZNPCsPlus
   - SimpleNPCs
+  - AtlasItemRegistry
 commands:
   betonquest:
     description: General quest command

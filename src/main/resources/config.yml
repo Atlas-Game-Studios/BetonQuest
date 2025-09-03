@@ -149,3 +149,4 @@ hook:
   fancynpcs: true
   znpcsplus: true
   simplenpcs: true
+  atlasitemregistry: true
