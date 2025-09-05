@@ -36,7 +36,7 @@ public class SimpleWrapper implements NpcWrapper<SNPC> {
 
     @Override
     public org.betonquest.betonquest.api.quest.npc.Npc<SNPC> getNpc(@Nullable final Profile profile) throws QuestException {
-        SNPC npc;
+        final SNPC npc;
         final int npcId = this.npcId.getValue(profile).intValue();
         npc = npcManager.getNPC(npcId);
         if (npc == null) {

@@ -14,7 +14,6 @@ public class SimpleIdentifier extends GenericReverseIdentifier<SNPC> {
      * @param prefix the prefix of relevant Ids
      */
     public SimpleIdentifier(final String prefix) {
-        super(prefix, SNPC.class, original -> String.valueOf(original.getId()),
-                original -> original.getName().getFullName() + " byName");
+        super(prefix, SNPC.class, original -> String.valueOf(original.getId()));
     }
 }
