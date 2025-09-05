@@ -1,6 +1,5 @@
 package org.betonquest.betonquest.compatibility.npc.simplenpcs;
 
-import com.ags.simplenpcs.SimpleNPCs;
 import com.ags.simplenpcs.objects.SNPC;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
@@ -35,12 +34,12 @@ public class SimpleAdapter implements org.betonquest.betonquest.api.quest.npc.Np
 
     @Override
     public void spawn(final Location location) {
-        // NPC spawning is handled by SimpleNPCs because NPCs are loaded in "lazily"
+        npc.spawn(location);
     }
 
     @Override
     public void despawn() {
-        // NPC despawning isn't really a thing because they are packet based entities
+        npc.despawn();
 
     }
 
@@ -89,6 +88,6 @@ public class SimpleAdapter implements org.betonquest.betonquest.api.quest.npc.Np
 
     @Override
     public boolean isSpawned() {
-        return SimpleNPCs.npcManager().getLoaded().contains(npc.getId());
+        return npc.isLoaded();
     }
 }
