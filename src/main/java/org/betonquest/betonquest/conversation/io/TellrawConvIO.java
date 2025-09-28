@@ -1,5 +1,9 @@
 package org.betonquest.betonquest.conversation.io;
 
+import io.papermc.paper.connection.PlayerGameConnection;
+import io.papermc.paper.event.player.PlayerCustomClickEvent;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -10,6 +14,7 @@ import org.betonquest.betonquest.conversation.Conversation;
 import org.betonquest.betonquest.conversation.ConversationColors;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -57,16 +62,12 @@ public class TellrawConvIO extends ChatConvIO {
      * @param event the preprocess event
      */
     @EventHandler(ignoreCancelled = true)
-    public void onCommandAnswer(final PlayerCommandPreprocessEvent event) {
-        if (!event.getPlayer().equals(onlineProfile.getPlayer())) {
-            return;
-        }
-        final String message = event.getMessage();
-        if (!message.toLowerCase(Locale.ROOT).startsWith(BETONQUESTANSWER)) {
-            return;
-        }
-        event.setCancelled(true);
-        final String hash = message.substring(BETONQUESTANSWER.length());
+    public void onClickAnswer(final PlayerCustomClickEvent event) {
+        if (!(event.getCommonConnection() instanceof PlayerGameConnection conn)) return;
+        final Player player = conn.getPlayer();
+        if (!player.equals(onlineProfile.getPlayer())) return;
+        final Key key = event.getIdentifier();
+        final String hash = key.value();
         for (int j = 1; j <= hashes.size(); j++) {
             if (hash.equals(hashes.get(j - 1))) {
                 conv.sendMessage(colors.getAnswer().append(colors.getPlayer().append(Component.text(onlineProfile.getPlayer().getName())))
@@ -88,7 +89,8 @@ public class TellrawConvIO extends ChatConvIO {
      */
     protected void displayText() {
         for (int j = 1; j <= options.size(); j++) {
-            final TextComponent message = Component.empty().clickEvent(ClickEvent.runCommand(BETONQUESTANSWER + hashes.get(j - 1)))
+            final TextComponent message = Component.empty()
+                    .clickEvent(ClickEvent.custom(Key.key("bq" + ":" + hashes.get(j - 1)), BinaryTagHolder.binaryTagHolder("bqanswer")))
                     .append(colors.getOption().append(colors.getNumber().append(Component.text(j)).append(Component.text(". ")))
                             .append(options.get(j)));
 
