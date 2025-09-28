@@ -1,7 +1,9 @@
 package org.betonquest.betonquest.compatibility.atlasitemregistry;
 
 import com.ags.atlasitemregistry.atlaslib.pdc.DataType;
+import com.ags.atlasitemregistry.atlaslib.util.MessageUtil;
 import com.ags.atlasitemregistry.atlaslib.util.PDC;
+import net.kyori.adventure.text.Component;
 import org.betonquest.betonquest.api.profile.Profile;
 import org.betonquest.betonquest.item.QuestItem;
 import org.bukkit.inventory.ItemStack;
@@ -25,15 +27,15 @@ public class AtlasQuestItem implements QuestItem {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         final ItemMeta itemMeta = resolvedItem.getItemMeta();
-        return itemMeta.hasDisplayName() ? itemMeta.getDisplayName() : material;
+        return itemMeta.hasDisplayName() ? itemMeta.displayName() : MessageUtil.convertMsg(material);
     }
 
     @Override
-    public List<String> getLore() {
+    public List<Component> getLore() {
         final ItemMeta itemMeta = resolvedItem.getItemMeta();
-        return itemMeta.hasLore() ? itemMeta.getLore() : List.of();
+        return itemMeta.hasLore() ? itemMeta.lore() : List.of();
     }
 
     @Override

@@ -4,8 +4,8 @@ import com.ags.simplenpcs.api.NPCLeftClickEvent;
 import com.ags.simplenpcs.api.NPCRightClickEvent;
 import com.ags.simplenpcs.objects.SNPC;
 import org.betonquest.betonquest.api.profile.ProfileProvider;
+import org.betonquest.betonquest.api.quest.npc.NpcRegistry;
 import org.betonquest.betonquest.api.quest.npc.feature.NpcInteractCatcher;
-import org.betonquest.betonquest.kernel.registry.quest.NpcTypeRegistry;
 import org.betonquest.betonquest.quest.objective.interact.Interaction;
 import org.bukkit.event.EventHandler;
 
@@ -17,10 +17,10 @@ public class SimpleCatcher extends NpcInteractCatcher<SNPC> {
      * Initializes the Fancy catcher.
      *
      * @param profileProvider the profile provider instance
-     * @param npcTypeRegistry the registry to identify the clicked Npc
+     * @param npcRegistry     the registry to identify the clicked Npc
      */
-    public SimpleCatcher(final ProfileProvider profileProvider, final NpcTypeRegistry npcTypeRegistry) {
-        super(profileProvider, npcTypeRegistry);
+    public SimpleCatcher(final ProfileProvider profileProvider, final NpcRegistry npcRegistry) {
+        super(profileProvider, npcRegistry);
     }
 
     /**

@@ -1,10 +1,11 @@
 package org.betonquest.betonquest.compatibility.npc.simplenpcs;
 
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.profile.ProfileProvider;
+import org.betonquest.betonquest.api.quest.npc.NpcRegistry;
 import org.betonquest.betonquest.compatibility.HookException;
 import org.betonquest.betonquest.compatibility.Integrator;
-import org.betonquest.betonquest.kernel.registry.quest.NpcTypeRegistry;
 import org.bukkit.Bukkit;
 
 /**
@@ -23,15 +24,15 @@ public class SimpleNPCsIntegrator implements Integrator {
     }
 
     @Override
-    public void hook() throws HookException {
+    public void hook(final BetonQuestApi api) throws HookException {
         final BetonQuest betonQuest = BetonQuest.getInstance();
-        final NpcTypeRegistry npcTypes = betonQuest.getFeatureRegistries().npc();
+        final NpcRegistry npcRegistry = betonQuest.getFeatureRegistries().npc();
         final ProfileProvider profileProvider = betonQuest.getProfileProvider();
-        Bukkit.getPluginManager().registerEvents(new SimpleCatcher(profileProvider, npcTypes), betonQuest);
+        Bukkit.getPluginManager().registerEvents(new SimpleCatcher(profileProvider, npcRegistry), betonQuest);
         final SimpleHider hider = new SimpleHider(betonQuest.getFeatureApi().getNpcHider());
         Bukkit.getPluginManager().registerEvents(hider, betonQuest);
-        npcTypes.register(PREFIX, new SimpleFactory());
-        npcTypes.registerIdentifier(new SimpleIdentifier(PREFIX));
+        npcRegistry.register(PREFIX, new SimpleFactory());
+        npcRegistry.registerIdentifier(new SimpleIdentifier(PREFIX));
     }
 
     @Override

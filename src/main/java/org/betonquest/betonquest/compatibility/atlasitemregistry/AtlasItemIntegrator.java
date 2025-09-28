@@ -1,8 +1,9 @@
 package org.betonquest.betonquest.compatibility.atlasitemregistry;
 
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.compatibility.Integrator;
-import org.betonquest.betonquest.kernel.registry.feature.ItemTypeRegistry;
+import org.betonquest.betonquest.item.ItemRegistry;
 
 /**
  * Integrator for Atlas Items.
@@ -17,11 +18,11 @@ public class AtlasItemIntegrator implements Integrator {
     }
 
     @Override
-    public void hook() {
+    public void hook(final BetonQuestApi api) {
         final BetonQuest plugin = BetonQuest.getInstance();
-        final ItemTypeRegistry itemTypes = plugin.getFeatureRegistries().item();
-        itemTypes.register("registry", new AtlasQuestItemFactory());
-        itemTypes.registerSerializer("registry", new AtlasQuestItemSerializer());
+        final ItemRegistry itemRegistry = plugin.getFeatureRegistries().item();
+        itemRegistry.register("registry", new AtlasQuestItemFactory());
+        itemRegistry.registerSerializer("registry", new AtlasQuestItemSerializer());
     }
 
     @Override
