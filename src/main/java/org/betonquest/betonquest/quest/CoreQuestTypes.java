@@ -158,6 +158,7 @@ import org.betonquest.betonquest.quest.objective.npc.NpcInteractObjectiveFactory
 import org.betonquest.betonquest.quest.objective.npc.NpcRangeObjectiveFactory;
 import org.betonquest.betonquest.quest.objective.password.PasswordObjectiveFactory;
 import org.betonquest.betonquest.quest.objective.pickup.PickupObjectiveFactory;
+import org.betonquest.betonquest.quest.objective.placeholder.PlaceholderObjectiveFactory;
 import org.betonquest.betonquest.quest.objective.resourcepack.ResourcepackObjectiveFactory;
 import org.betonquest.betonquest.quest.objective.ride.RideObjectiveFactory;
 import org.betonquest.betonquest.quest.objective.shear.ShearObjectiveFactory;
@@ -463,6 +464,9 @@ public class CoreQuestTypes {
         objectiveTypes.register("equip", new EquipItemObjectiveFactory());
         objectiveTypes.register("jump", new JumpObjectiveFactory());
         objectiveTypes.register("resourcepack", new ResourcepackObjectiveFactory());
+
+        // Atlas
+        objectiveTypes.register("placeholder", new PlaceholderObjectiveFactory());
     }
 
     private void registerVariables(final VariableTypeRegistry variables) {
