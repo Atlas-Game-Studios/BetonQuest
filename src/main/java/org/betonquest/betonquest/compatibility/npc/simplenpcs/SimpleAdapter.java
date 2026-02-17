@@ -40,7 +40,6 @@ public class SimpleAdapter implements org.betonquest.betonquest.api.quest.npc.Np
     @Override
     public void despawn() {
         npc.despawn();
-
     }
 
     @Override

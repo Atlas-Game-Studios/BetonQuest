@@ -1,7 +1,6 @@
 package org.betonquest.betonquest;
 
 import com.google.common.base.Suppliers;
-import io.papermc.lib.PaperLib;
 import net.kyori.adventure.key.Key;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -112,7 +111,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 
 /**
  * Represents BetonQuest plugin.
@@ -288,12 +286,6 @@ public class BetonQuest extends JavaPlugin implements BetonQuestApi, LanguagePro
         instance = this;
         this.loggerFactory = registerAndGetService(BetonQuestLoggerFactory.class, new CachingBetonQuestLoggerFactory(new DefaultBetonQuestLoggerFactory()));
         this.log = loggerFactory.create(this);
-        if (!PaperLib.isPaper()) {
-            PaperLib.suggestPaper(this, Level.WARNING);
-            log.warn("Only Paper is supported! Disabling BetonQuest...");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
 
         this.configAccessorFactory = registerAndGetService(ConfigAccessorFactory.class, new DefaultConfigAccessorFactory(loggerFactory, loggerFactory.create(ConfigAccessorFactory.class)));
         this.profileProvider = registerAndGetService(ProfileProvider.class, new UUIDProfileProvider(getServer()));

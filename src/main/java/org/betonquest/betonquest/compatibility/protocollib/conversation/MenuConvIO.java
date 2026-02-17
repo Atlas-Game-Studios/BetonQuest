@@ -8,13 +8,11 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.Component;
 import org.betonquest.betonquest.api.common.component.FixedComponentLineWrapper;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.compatibility.protocollib.conversation.display.Display;
 import org.betonquest.betonquest.compatibility.protocollib.conversation.display.Scroll;
-import org.betonquest.betonquest.compatibility.protocollib.wrappers.WrapperPlayClientSteerVehicleUpdated;
 import org.betonquest.betonquest.conversation.ChatConvIO;
 import org.betonquest.betonquest.conversation.Conversation;
 import org.betonquest.betonquest.conversation.ConversationColors;
@@ -155,7 +153,7 @@ public class MenuConvIO extends ChatConvIO {
             final Location target = getBlockBelowPlayer(player).add(0, -1, 0);
             // TODO version switch:
             //  Remove this code when only 1.20.2+ is supported
-            stand = player.getWorld().spawn(target.add(0, PaperLib.isVersion(20, 2) ? -0.375 : -0.131_25, 0), ArmorStand.class);
+            stand = player.getWorld().spawn(target.add(0, -0.375, 0), ArmorStand.class);
 
             stand.setGravity(false);
             stand.setVisible(false);
@@ -371,11 +369,7 @@ public class MenuConvIO extends ChatConvIO {
 
                 final WrapperPlayClientSteerVehicle steerEvent;
 
-                if (PaperLib.isVersion(21, 3)) {
-                    steerEvent = new WrapperPlayClientSteerVehicleUpdated(event.getPacket());
-                } else {
-                    steerEvent = new WrapperPlayClientSteerVehicle(event.getPacket());
-                }
+                steerEvent = new WrapperPlayClientSteerVehicle(event.getPacket());
 
                 if (steerEvent.isJump() && controls.containsKey(CONTROL.JUMP)) {
                     // Player Jumped

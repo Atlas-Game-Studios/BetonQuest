@@ -6,11 +6,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.conversation.interceptor.Interceptor;
@@ -71,30 +67,10 @@ public class PacketInterceptor implements Interceptor, Listener {
                 }
                 final PacketContainer packet = event.getPacket();
                 final PacketType packetType = packet.getType();
-                // TODO version switch:
-                //  Remove this code when only 1.19+ is supported
-                if (PaperLib.isVersion(19, 0)) {
-                    if (packetType.equals(PacketType.Play.Server.SYSTEM_CHAT)) {
-                        final String message = PaperLib.isVersion(20, 4)
-                                ? packet.getChatComponents().read(0).getJson()
-                                : packet.getStrings().read(0);
-                        if (message != null && message.contains("\"" + MESSAGE_PASSTHROUGH_TAG + "\"")) {
-                            return;
-                        }
-                    }
-                } else {
-                    if (baseComponentIndex == -1) {
-                        if (packet.getModifier().read(1) instanceof BaseComponent[]) {
-                            baseComponentIndex = 1;
-                        } else {
-                            baseComponentIndex = 2;
-                        }
-                    }
-                    final BaseComponent[] components = (BaseComponent[]) packet.getModifier().read(baseComponentIndex);
-                    if (components != null && components.length > 0 && ((TextComponent) components[0]).getText().contains(MESSAGE_PASSTHROUGH_TAG)) {
-                        return;
-                    }
-                    if (packet.getChatTypes().read(0) == EnumWrappers.ChatType.GAME_INFO) {
+
+                if (packetType.equals(PacketType.Play.Server.SYSTEM_CHAT)) {
+                    final String message = packet.getChatComponents().read(0).getJson();
+                    if (message != null && message.contains("\"" + MESSAGE_PASSTHROUGH_TAG + "\"")) {
                         return;
                     }
                 }
@@ -109,12 +85,8 @@ public class PacketInterceptor implements Interceptor, Listener {
     private static List<PacketType> getPacketTypes() {
         final List<PacketType> packets = new ArrayList<>();
         packets.add(PacketType.Play.Server.CHAT);
-        if (PaperLib.isVersion(19, 0)) {
-            packets.add(PacketType.Play.Server.SYSTEM_CHAT);
-        }
-        if (PaperLib.isVersion(19, 3)) {
-            packets.add(PacketType.Play.Server.DISGUISED_CHAT);
-        }
+        packets.add(PacketType.Play.Server.SYSTEM_CHAT);
+        packets.add(PacketType.Play.Server.DISGUISED_CHAT);
         return packets;
     }
 

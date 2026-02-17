@@ -10,7 +10,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.papermc.lib.PaperLib;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.bukkit.entity.Entity;
@@ -61,23 +60,6 @@ public class EntityHider implements Listener {
                 PacketType.Play.Server.REMOVE_ENTITY_EFFECT,
                 PacketType.Play.Server.BLOCK_BREAK_ANIMATION,
                 PacketType.Play.Server.PLAYER_COMBAT_KILL));
-
-        // TODO version switch:
-        //  Remove this code when only 1.19+ is supported
-        if (!PaperLib.isVersion(19)) {
-            entityPackets.add(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
-            entityPackets.add(PacketType.Play.Server.SPAWN_ENTITY_PAINTING);
-        }
-        // TODO version switch:
-        //  Remove this code when only 1.20.2+ is supported
-        if (!PaperLib.isVersion(20, 2)) {
-            entityPackets.add(PacketType.Play.Server.NAMED_ENTITY_SPAWN);
-        }
-        // TODO version switch:
-        //  Remove this code when only 1.21.4+ is supported
-        if (!PaperLib.isVersion(21, 4)) {
-            entityPackets.add(PacketType.Play.Server.SPAWN_ENTITY_EXPERIENCE_ORB);
-        }
 
         ENTITY_PACKETS = entityPackets.toArray(PacketType[]::new);
     }

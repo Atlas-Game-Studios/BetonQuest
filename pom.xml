@@ -590,7 +590,6 @@
                   <include>commons-io</include>
                   <include>org.json</include>
                   <include>com.comphenix.packetwrapper</include>
-                  <include>io.papermc:paperlib</include>
                   <include>com.cronutils:cron-utils</include>
                   <include>de.themoep:minedown-adventure</include>
                 </includes>

@@ -1,6 +1,5 @@
 package org.betonquest.betonquest.item.typehandler;
 
-import io.papermc.lib.PaperLib;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.util.Utils;
@@ -143,16 +142,8 @@ public class PotionHandler implements ItemMetaHandler<PotionMeta> {
     public String serializeToString(final PotionMeta potionMeta) {
         // TODO version switch:
         //  Remove this code when only 1.20.5+ is supported
-        final String baseEffect = PaperLib.isVersion(20, 5) ? getBasePotionEffects(potionMeta)
-                : getBasePotionEffectsPre_1_21(potionMeta);
+        final String baseEffect = getBasePotionEffects(potionMeta);
         return addCustomEffects(potionMeta, baseEffect);
-    }
-
-    @SuppressWarnings("PMD.MethodNamingConventions")
-    private String getBasePotionEffectsPre_1_21(final PotionMeta potionMeta) {
-        final PotionData pData = potionMeta.getBasePotionData();
-        return "type:" + pData.getType() + (pData.isExtended() ? " extended" : "")
-                + (pData.isUpgraded() ? " upgraded" : "");
     }
 
     @Nullable
