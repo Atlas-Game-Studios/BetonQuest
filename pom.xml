@@ -33,6 +33,14 @@
     </license>
   </licenses>
 
+  <!-- Deploy to Atlas Repo -->
+  <distributionManagement>
+    <repository>
+      <id>atlasmc-repo</id>
+      <url>https://repo.mc-atlas.com/maven</url>
+    </repository>
+  </distributionManagement>
+
   <dependencies>
     <!-- from papermc repository -->
     <dependency>
@@ -645,6 +653,35 @@
                 </relocation>
               </relocations>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Atlas - Disable checkstyle and PMD (configs artifact requires unreachable nexus.betonquest.org) -->
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>
