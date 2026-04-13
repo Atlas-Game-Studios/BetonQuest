@@ -1,5 +1,6 @@
 package org.betonquest.betonquest.quest.event.teleport;
 
+import com.ags.atlasitemregistry.atlaslib.util.EntityUtil;
 import org.betonquest.betonquest.api.instruction.variable.Variable;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.api.quest.QuestException;
@@ -32,6 +33,10 @@ public class TeleportEvent implements OnlineEvent {
             conv.endConversation();
         }
         final Location playerLocation = location.getValue(profile);
-        profile.getPlayer().teleport(playerLocation);
+        if (profile.getPlayer().getVehicle() != null) {
+            EntityUtil.teleport(profile.getPlayer().getVehicle(), playerLocation);
+        } else {
+            profile.getPlayer().teleportAsync(playerLocation);
+        }
     }
 }
