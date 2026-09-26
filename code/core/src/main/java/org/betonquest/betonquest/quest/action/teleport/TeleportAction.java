@@ -6,6 +6,10 @@ import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.api.quest.action.OnlineAction;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * Teleports the player to specified location.
@@ -37,7 +41,28 @@ public class TeleportAction implements OnlineAction {
     public void execute(final OnlineProfile profile) throws QuestException {
         conversations.cancel(profile);
         final Location playerLocation = location.getValue(profile);
-        profile.getPlayer().teleport(playerLocation);
+        final Player player = profile.getPlayer();
+        final Entity vehicle = player.getVehicle();
+        if (vehicle == null) {
+            player.teleportAsync(playerLocation);
+        } else {
+            teleportWithPassengers(vehicle, playerLocation);
+        }
+    }
+
+    /**
+     * Atlas: entities with passengers can't be teleported, so eject, move and re-mount them.
+     *
+     * @param entity   the entity to teleport
+     * @param location the target location
+     */
+    private static void teleportWithPassengers(final Entity entity, final Location location) {
+        final List<Entity> passengers = entity.getPassengers();
+        entity.eject();
+        entity.teleportAsync(location).thenAccept(success -> passengers.forEach(passenger -> {
+            teleportWithPassengers(passenger, location);
+            entity.addPassenger(passenger);
+        }));
     }
 
     @Override
