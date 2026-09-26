@@ -125,5 +125,7 @@ public class ObjectiveTypeComponent extends AbstractCoreComponent {
         objectiveTypes.register("equip", new EquipItemObjectiveFactory());
         objectiveTypes.register("jump", new JumpObjectiveFactory());
         objectiveTypes.register("resourcepack", new ResourcepackObjectiveFactory());
+        // Atlas: never-completing objective, replaces `npcinteract 0`
+        objectiveTypes.register("noop", (instruction, service) -> () -> service);
     }
 }
