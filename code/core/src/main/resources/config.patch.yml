@@ -1,4 +1,12 @@
 # Put patches for BetonQuest's config here. The syntax is documented in the docs/API/Configuration-Files.md
+# Atlas: keep this the newest entry, renumber after upstream's on rebase
+3.3.0.4:
+  - type: SET
+    key: hook.simplenpcs
+    value: true
+  - type: SET
+    key: hook.atlasitemregistry
+    value: true
 3.3.0.3:
   - type: REMOVE
     key: mysql.reconnect_interval

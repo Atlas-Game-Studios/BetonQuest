@@ -45,6 +45,8 @@ softdepend:
   - FancyHolograms
   - TheBrewingProject
   - DiscordSRV
+  - SimpleNPCs
+  - AtlasItemRegistry
 commands:
   journal:
     description: Adds journal to your inventory

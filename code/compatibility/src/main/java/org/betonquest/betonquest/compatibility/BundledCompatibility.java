@@ -5,6 +5,7 @@ import org.betonquest.betonquest.api.integration.Integration;
 import org.betonquest.betonquest.api.integration.IntegrationService;
 import org.betonquest.betonquest.api.integration.policy.Policy;
 import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.compatibility.atlasitemregistry.AtlasItemIntegrator;
 import org.betonquest.betonquest.compatibility.auraskills.AuraSkillsIntegrator;
 import org.betonquest.betonquest.compatibility.brewery.BreweryIntegrator;
 import org.betonquest.betonquest.compatibility.craftengine.CraftEngineIntegrator;
@@ -29,6 +30,7 @@ import org.betonquest.betonquest.compatibility.mythicmobs.MythicMobsIntegrator;
 import org.betonquest.betonquest.compatibility.nexo.NexoIntegrator;
 import org.betonquest.betonquest.compatibility.npc.citizens.CitizensIntegrator;
 import org.betonquest.betonquest.compatibility.npc.fancynpcs.FancyNpcsIntegrator;
+import org.betonquest.betonquest.compatibility.npc.simplenpcs.SimpleNPCsIntegrator;
 import org.betonquest.betonquest.compatibility.npc.znpcsplus.ZNPCsPlusIntegrator;
 import org.betonquest.betonquest.compatibility.packetevents.PacketEventsIntegrator;
 import org.betonquest.betonquest.compatibility.placeholderapi.PlaceholderAPIIntegrator;
@@ -168,5 +170,8 @@ public final class BundledCompatibility {
         register("ItemsAdder", () -> new ItemsAdderIntegrator(), ItemsAdderIntegrator.REQUIRED_VERSION);
         register("TheBrewingProject", () -> new TheBrewingProjectIntegrator(), TheBrewingProjectIntegrator.policies());
         register("DiscordSRV", () -> new DiscordSRVIntegrator(), DiscordSRVIntegrator.REQUIRED_VERSION);
+        // Atlas
+        register(SimpleNPCsIntegrator.PREFIX, () -> new SimpleNPCsIntegrator());
+        register("AtlasItemRegistry", () -> new AtlasItemIntegrator());
     }
 }
