@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * Adds tellraw command handling to the SimpleConvIO.
@@ -32,7 +33,13 @@ public class TellrawConvIO extends ChatConvIO {
     /**
      * The answer command.
      */
-    private static final String BETONQUESTANSWER = "/betonquestanswer ";
+    public static final String BETONQUESTANSWER = "/betonquestanswer ";
+
+    /**
+     * Atlas: creates the click event of an answer from its hash.
+     * Replaced with custom clicks on 1.21.8+, where clicking run_command text opens a confirmation screen.
+     */
+    private static Function<String, ClickEvent> answerClick = hash -> ClickEvent.runCommand(BETONQUESTANSWER + hash);
 
     static {
         Bukkit.getPluginManager().registerEvents(new UnknownCommandTellrawListener(), BetonQuest.getInstance());
@@ -59,6 +66,15 @@ public class TellrawConvIO extends ChatConvIO {
                          final ConversationColors colors) {
         super(log, config, plugin, localizations, conv, onlineProfile, colors);
         hashes = new ArrayList<>();
+    }
+
+    /**
+     * Atlas: sets how the click event of an answer is created from its hash.
+     *
+     * @param answerClick the click event factory
+     */
+    public static void setAnswerClick(final Function<String, ClickEvent> answerClick) {
+        TellrawConvIO.answerClick = answerClick;
     }
 
     /**
@@ -98,7 +114,7 @@ public class TellrawConvIO extends ChatConvIO {
      */
     protected void displayText() {
         for (int j = 1; j <= options.size(); j++) {
-            final TextComponent message = Component.empty().clickEvent(ClickEvent.runCommand(BETONQUESTANSWER + hashes.get(j - 1)))
+            final TextComponent message = Component.empty().clickEvent(answerClick.apply(hashes.get(j - 1)))
                     .append(colors.getOption().append(colors.getNumber().append(Component.text(j)).append(Component.text(". ")))
                             .append(options.get(j)));
 

@@ -7,6 +7,7 @@ import org.betonquest.betonquest.api.dependency.CoreComponentLoader;
 import org.betonquest.betonquest.api.integration.Integration;
 import org.betonquest.betonquest.conversation.ConversationColors;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
+import org.betonquest.betonquest.mc_1_21_8.conversation.io.CustomClickAnswerListener;
 import org.betonquest.betonquest.mc_1_21_8.conversation.io.DialogConvIOFactory;
 
 /**
@@ -38,6 +39,8 @@ public class BundledMC_1_21_8 implements Integration {
                 componentLoader.get(ConversationColors.class),
                 new ComponentLineWrapper(api.fonts())
         ));
+        // Atlas
+        api.bukkit().registerEvents(new CustomClickAnswerListener());
     }
 
     @Override
