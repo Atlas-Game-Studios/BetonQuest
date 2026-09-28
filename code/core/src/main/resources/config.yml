@@ -76,6 +76,24 @@ conversation:
       option_selected_text_wrap: '@[minimessage]    <white><underlined>'
       scroll_up: '@[minimessage]<white>        ↑</white>'
       scroll_down: '@[minimessage]<white>        ↓</white>'
+    mythichud:
+      popup: betonquest-conversation
+      line_length: 232
+      line_count: 7
+      line_fill_before: 0
+      refresh_delay: 1200
+      typewriter_speed: 1
+      typewriter_sound: minecraft:block.note_block.hat
+      typewriter_sound_volume: 0.3
+      typewriter_sound_pitch: 1.6
+      npc_name_type: none
+      control_select: right_click
+      control_move: scroll
+      control_cancel: sneak
+      option_text: '@[minimessage]  <gray>{option_text}'
+      option_text_wrap: '@[minimessage]  <gray>'
+      option_selected_text: "@[minimessage]\uE0A0 <white>{option_text}"
+      option_selected_text_wrap: '@[minimessage]   <white>'
     chest:
       show_number: true
       show_npc_text: true
@@ -171,3 +189,4 @@ hook:
   discordsrv: true
   simplenpcs: true
   atlasitemregistry: true
+  mythichud: true

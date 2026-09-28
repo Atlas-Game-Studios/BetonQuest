@@ -1,7 +1,6 @@
 package org.betonquest.betonquest.conversation.menu.display;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
 import org.betonquest.betonquest.api.common.component.FixedComponentLineWrapper;
 import org.betonquest.betonquest.api.common.component.VariableReplacement;
 import org.betonquest.betonquest.conversation.menu.MenuConvIOSettings;
@@ -43,6 +42,18 @@ public class Display {
     private final Set<Integer> lastViewableOptions;
 
     /**
+     * Number of characters revealed by the typewriter effect.
+     */
+    @SuppressWarnings("PMD.AvoidUsingVolatile")
+    private volatile int revealed;
+
+    /**
+     * If the last shown screen had text cut off by the typewriter effect.
+     */
+    @SuppressWarnings("PMD.AvoidUsingVolatile")
+    private volatile boolean typing;
+
+    /**
      * Creates a new display for the conversation.
      *
      * @param settings the settings for the menu conversation IO
@@ -79,6 +90,32 @@ public class Display {
         final LineView bottomMargin = new LineView.Filler(new LineView.Empty(), settings.bottomMargin());
         this.screen = new LineView.Combiner(filler, new LineView.Combiner(npcNameView, excerpt), bottomMargin);
         this.lastViewableOptions = new HashSet<>();
+        this.revealed = settings.typewriterSpeed() > 0 ? 0 : Integer.MAX_VALUE;
+    }
+
+    /**
+     * Reveals more characters of the typewriter effect.
+     *
+     * @param characters the number of characters to reveal additionally
+     */
+    public void reveal(final int characters) {
+        revealed = (int) Math.min(Integer.MAX_VALUE, (long) revealed + characters);
+    }
+
+    /**
+     * Reveals all text, skipping the rest of the typewriter effect.
+     */
+    public void revealAll() {
+        revealed = Integer.MAX_VALUE;
+    }
+
+    /**
+     * Whether the last shown screen still had text to type. Options are hidden while typing.
+     *
+     * @return true if the typewriter effect is not done
+     */
+    public boolean isTyping() {
+        return typing;
     }
 
     private LineView getFormattedNpcName(final MenuConvIOSettings settings, final FixedComponentLineWrapper wrapper,
@@ -161,9 +198,9 @@ public class Display {
      * Get the current screen for the given scroll state.
      *
      * @param scroll The scroll state modification, -1, 0 or +1
-     * @return the selected screen as a component.
+     * @return the selected screen as lines.
      */
-    public Component getDisplay(final Scroll scroll) {
+    public List<Component> getDisplay(final Scroll scroll) {
         if (scroll != Scroll.NONE) {
             checkNewScroll(scroll);
         }
@@ -172,8 +209,17 @@ public class Display {
         if (scroll != Scroll.NONE) {
             checkNewSelect(scroll, lines);
         }
-        final List<Component> displayLines = lines.stream().map(Line::line).toList();
-        return Component.join(JoinConfiguration.newlines(), displayLines);
+        final Typewriter typewriter = new Typewriter(revealed);
+        final List<Component> displayLines = new ArrayList<>();
+        for (final Line line : lines) {
+            if (line instanceof ToggleableIndexLine) {
+                displayLines.add(typewriter.isCut() ? Component.empty() : line.line());
+            } else {
+                displayLines.add(typewriter.type(line.line()));
+            }
+        }
+        typing = typewriter.isCut();
+        return displayLines;
     }
 
     private void setupFirstScreen(final Scroll scroll, final List<Line> lines) {

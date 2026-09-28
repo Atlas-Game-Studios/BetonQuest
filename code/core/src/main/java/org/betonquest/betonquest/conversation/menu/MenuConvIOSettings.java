@@ -1,10 +1,14 @@
 package org.betonquest.betonquest.conversation.menu;
 
+import net.kyori.adventure.key.InvalidKeyException;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.common.component.VariableComponent;
 import org.betonquest.betonquest.api.text.TextParser;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Menu conversation settings.
@@ -15,6 +19,8 @@ import org.bukkit.configuration.ConfigurationSection;
  * @param lineFillBefore         number of empty lines before a conversation starts
  * @param refreshDelay           time interval before printing the conversation again in ticks
  * @param rateLimit              time to wait until a new option can be selected in ticks
+ * @param typewriterSpeed        characters of NPC text revealed per tick, 0 shows it at once
+ * @param typewriterSound        sound played each tick while typing, or null for none
  * @param setSpeed               sets the speed to zero to achieve a zoom effect
  * @param npcNameType            place to show the NPC name, chat or none
  * @param npcNameAlign           for npc_name_type chat, the alignment of the name, left, right or center
@@ -34,7 +40,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @param scrollDown             arrow format to scroll down
  */
 public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin, int lineFillBefore, int refreshDelay,
-                                 int rateLimit, boolean setSpeed, String npcNameType, String npcNameAlign,
+                                 int rateLimit, int typewriterSpeed, @Nullable Sound typewriterSound, boolean setSpeed, String npcNameType, String npcNameAlign,
                                  boolean npcNameSeparator, boolean optionsSeparator, String controlSelect,
                                  String controlMove, String controlCancel, VariableComponent npcName,
                                  VariableComponent npcText, Component npcTextWrap, VariableComponent optionText,
@@ -56,6 +62,8 @@ public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin
         final int lineFillBefore = config.getInt("line_fill_before");
         final int refreshDelay = config.getInt("refresh_delay");
         final int rateLimit = config.getInt("rate_limit");
+        final int typewriterSpeed = config.getInt("typewriter_speed");
+        final Sound typewriterSound = parseSound(config);
         final boolean setSpeed = config.getBoolean("set_speed");
 
         final String npcNameType = config.getString("npc_name_type", "");
@@ -77,12 +85,26 @@ public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin
         final String scrollDown = config.getString("scroll_down", "");
 
         return new MenuConvIOSettings(lineLength, lineCount, bottomMargin, lineFillBefore, refreshDelay, rateLimit,
-                setSpeed, npcNameType, npcNameAlign, npcNameSeparator, optionsSeparator, controlSelect, controlMove,
+                typewriterSpeed, typewriterSound, setSpeed, npcNameType, npcNameAlign, npcNameSeparator, optionsSeparator, controlSelect, controlMove,
                 controlCancel, new VariableComponent(textParser.parse(npcName)),
                 new VariableComponent(textParser.parse(npcText)), textParser.parse(npcTextWrap),
                 new VariableComponent(textParser.parse(optionText)), textParser.parse(optionTextWrap),
                 new VariableComponent(textParser.parse(optionSelectedText)), textParser.parse(optionSelectedTextWrap),
                 textParser.parse(scrollUp), textParser.parse(scrollDown)
         );
+    }
+
+    @Nullable
+    private static Sound parseSound(final ConfigurationSection config) throws QuestException {
+        final String sound = config.getString("typewriter_sound", "");
+        if (sound.isEmpty()) {
+            return null;
+        }
+        try {
+            return Sound.sound(Key.key(sound), Sound.Source.MASTER,
+                    (float) config.getDouble("typewriter_sound_volume", 1), (float) config.getDouble("typewriter_sound_pitch", 1));
+        } catch (final InvalidKeyException e) {
+            throw new QuestException("Invalid typewriter_sound: " + sound, e);
+        }
     }
 }

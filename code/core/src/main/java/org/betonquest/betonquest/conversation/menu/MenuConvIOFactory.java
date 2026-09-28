@@ -15,8 +15,11 @@ import org.betonquest.betonquest.conversation.ConversationIO;
 import org.betonquest.betonquest.conversation.ConversationIOFactory;
 import org.betonquest.betonquest.conversation.menu.input.ConversationAction;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -70,6 +73,17 @@ public class MenuConvIOFactory implements ConversationIOFactory {
     private final ConversationColors colors;
 
     /**
+     * Config section overriding keys of {@code conversation.io.menu}, or null to use it as is.
+     */
+    @Nullable
+    private final String overrideSection;
+
+    /**
+     * Where the display lines are shown.
+     */
+    private final MenuConvIO.Renderer renderer;
+
+    /**
      * Create a new Menu conversation IO factory.
      *
      * @param loggerFactory the logger factory to create new logger instances
@@ -85,6 +99,14 @@ public class MenuConvIOFactory implements ConversationIOFactory {
                              final Localizations localizations,
                              final TriFunction<Player, ConversationAction, Boolean, ConversationSession> inputFunction,
                              final TextParser textParser, final FontRegistry fontRegistry, final ConversationColors colors) {
+        this(loggerFactory, config, plugin, localizations, inputFunction, textParser, fontRegistry, colors, null, MenuConvIO.Renderer.CHAT);
+    }
+
+    private MenuConvIOFactory(final BetonQuestLoggerFactory loggerFactory, final ConfigAccessor config, final Plugin plugin,
+                              final Localizations localizations,
+                              final TriFunction<Player, ConversationAction, Boolean, ConversationSession> inputFunction,
+                              final TextParser textParser, final FontRegistry fontRegistry, final ConversationColors colors,
+                              @Nullable final String overrideSection, final MenuConvIO.Renderer renderer) {
         this.loggerFactory = loggerFactory;
         this.config = config;
         this.plugin = plugin;
@@ -93,14 +115,40 @@ public class MenuConvIOFactory implements ConversationIOFactory {
         this.textParser = textParser;
         this.fontRegistry = fontRegistry;
         this.colors = colors;
+        this.overrideSection = overrideSection;
+        this.renderer = renderer;
+    }
+
+    /**
+     * Creates a menu factory with the same controls that shows its lines elsewhere.
+     *
+     * @param overrideSection config section whose keys override {@code conversation.io.menu}
+     * @param renderer        where the display lines are shown
+     * @return the new factory
+     */
+    public MenuConvIOFactory withRenderer(final String overrideSection, final MenuConvIO.Renderer renderer) {
+        return new MenuConvIOFactory(loggerFactory, config, plugin, localizations, inputFunction, textParser, fontRegistry,
+                colors, overrideSection, renderer);
     }
 
     @Override
     public ConversationIO parse(final Conversation conversation, final OnlineProfile onlineProfile) throws QuestException {
-        final MenuConvIOSettings settings = MenuConvIOSettings.fromConfigurationSection(textParser, config.getConfigurationSection("conversation.io.menu"));
+        final MenuConvIOSettings settings = MenuConvIOSettings.fromConfigurationSection(textParser, settingsSection());
         final FixedComponentLineWrapper componentLineWrapper = new FixedComponentLineWrapper(fontRegistry, settings.lineLength());
         return new MenuConvIO(loggerFactory.create(MenuConvIO.class), config, plugin, localizations, inputFunction, conversation, onlineProfile, colors, settings,
-                componentLineWrapper, getControls(settings));
+                componentLineWrapper, getControls(settings), renderer);
+    }
+
+    private ConfigurationSection settingsSection() {
+        final ConfigurationSection menu = config.getConfigurationSection("conversation.io.menu");
+        final ConfigurationSection override = overrideSection == null ? null : config.getConfigurationSection(overrideSection);
+        if (override == null) {
+            return menu;
+        }
+        final MemoryConfiguration merged = new MemoryConfiguration();
+        menu.getValues(false).forEach(merged::set);
+        override.getValues(false).forEach(merged::set);
+        return merged;
     }
 
     private Map<MenuConvIO.CONTROL, MenuConvIO.ACTION> getControls(final MenuConvIOSettings settings) throws QuestException {

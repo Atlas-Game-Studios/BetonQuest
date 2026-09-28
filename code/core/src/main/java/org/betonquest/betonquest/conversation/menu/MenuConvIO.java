@@ -1,6 +1,8 @@
 package org.betonquest.betonquest.conversation.menu;
 
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.apache.commons.lang3.function.TriFunction;
 import org.betonquest.betonquest.api.common.component.FixedComponentLineWrapper;
 import org.betonquest.betonquest.api.config.ConfigAccessor;
@@ -26,6 +28,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * An {@link ChatConvIO} implementation that use player ingame movements to control the conversation.
  */
-@SuppressWarnings({"PMD.GodClass", "PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.ExcessiveParameterList"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.ExcessiveParameterList"})
 public class MenuConvIO extends ChatConvIO {
 
     /**
@@ -79,6 +82,11 @@ public class MenuConvIO extends ChatConvIO {
     private final ConversationSession input;
 
     /**
+     * Where the display lines are shown.
+     */
+    private final Renderer renderer;
+
+    /**
      * The current state of the conversation.
      */
     @SuppressWarnings("PMD.AvoidUsingVolatile")
@@ -89,6 +97,12 @@ public class MenuConvIO extends ChatConvIO {
      */
     @Nullable
     protected BukkitRunnable displayRunnable;
+
+    /**
+     * The runnable that types the NPC text.
+     */
+    @Nullable
+    protected BukkitRunnable typingRunnable;
 
     /**
      * The display used to show the conversation.
@@ -110,18 +124,20 @@ public class MenuConvIO extends ChatConvIO {
      * @param settings             the settings for the conversation IO
      * @param componentLineWrapper the component line wrapper to use for the conversation
      * @param controls             the used controls
+     * @param renderer             where the display lines are shown
      */
     public MenuConvIO(final BetonQuestLogger log, final ConfigAccessor config, final Plugin plugin,
                       final Localizations localizations,
                       final TriFunction<Player, ConversationAction, Boolean, ConversationSession> inputFunction,
                       final Conversation conv, final OnlineProfile onlineProfile, final ConversationColors colors,
                       final MenuConvIOSettings settings, final FixedComponentLineWrapper componentLineWrapper,
-                      final Map<CONTROL, ACTION> controls) {
+                      final Map<CONTROL, ACTION> controls, final Renderer renderer) {
         super(log, config, plugin, localizations, conv, onlineProfile, colors);
         this.plugin = plugin;
         this.settings = settings;
         this.componentLineWrapper = componentLineWrapper;
         this.controls = controls;
+        this.renderer = renderer;
         this.input = inputFunction.apply(onlineProfile.getPlayer(), new MenuConversationAction(), settings.setSpeed());
     }
 
@@ -169,6 +185,40 @@ public class MenuConvIO extends ChatConvIO {
             };
             displayRunnable.runTaskTimerAsynchronously(plugin, settings.refreshDelay(), settings.refreshDelay());
         }
+        if (settings.typewriterSpeed() > 0) {
+            startTyping();
+        }
+    }
+
+    private void startTyping() {
+        typingRunnable = new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                final Display display = chatDisplay;
+                if (state.isEnded() || display == null || !display.isTyping()) {
+                    this.cancel();
+                    return;
+                }
+                display.reveal(settings.typewriterSpeed());
+                updateDisplay();
+                if (settings.typewriterSound() != null) {
+                    onlineProfile.getPlayer().playSound(settings.typewriterSound(), Sound.Emitter.self());
+                }
+            }
+        };
+        typingRunnable.runTaskTimerAsynchronously(plugin, 1, 1);
+    }
+
+    private void cancelRunnables() {
+        if (displayRunnable != null) {
+            displayRunnable.cancel();
+            displayRunnable = null;
+        }
+        if (typingRunnable != null) {
+            typingRunnable.cancel();
+            typingRunnable = null;
+        }
     }
 
     // Override this event from our parent
@@ -181,10 +231,7 @@ public class MenuConvIO extends ChatConvIO {
 
     @Override
     public void clear() {
-        if (displayRunnable != null) {
-            displayRunnable.cancel();
-            displayRunnable = null;
-        }
+        cancelRunnables();
 
         chatDisplay = null;
 
@@ -204,11 +251,9 @@ public class MenuConvIO extends ChatConvIO {
             state = ConversationState.ENDED;
             input.end();
 
-            if (displayRunnable != null) {
-                displayRunnable.cancel();
-                displayRunnable = null;
-            }
+            cancelRunnables();
 
+            renderer.hide(onlineProfile);
             super.end(callback);
         } finally {
             lock.unlock();
@@ -219,6 +264,11 @@ public class MenuConvIO extends ChatConvIO {
         if (chatDisplay == null || isOnCooldown()) {
             return;
         }
+        if (chatDisplay.isTyping()) {
+            chatDisplay.revealAll();
+            updateDisplay();
+            return;
+        }
         chatDisplay.getSelection().ifPresent(index -> conv.passPlayerAnswer(index + 1));
     }
 
@@ -227,7 +277,6 @@ public class MenuConvIO extends ChatConvIO {
      *
      * @param event the event
      */
-    @SuppressWarnings("PMD.CollapsibleIfStatements")
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerInteractEvent(final PlayerInteractEvent event) {
         if (state.isInactive() || !event.getPlayer().equals(onlineProfile.getPlayer())) {
@@ -243,10 +292,9 @@ public class MenuConvIO extends ChatConvIO {
             event.setCancelled(true);
 
             final Action action = event.getAction();
-            if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-                if (controls.containsKey(CONTROL.LEFT_CLICK)) {
-                    handleSteering(controls.get(CONTROL.LEFT_CLICK));
-                }
+            final CONTROL control = action.isLeftClick() ? CONTROL.LEFT_CLICK : CONTROL.RIGHT_CLICK;
+            if (action != Action.PHYSICAL && event.getHand() == EquipmentSlot.HAND && controls.containsKey(control)) {
+                handleSteering(controls.get(control));
             }
         } finally {
             lock.unlock();
@@ -272,8 +320,9 @@ public class MenuConvIO extends ChatConvIO {
 
             event.setCancelled(true);
 
-            if (controls.containsKey(CONTROL.LEFT_CLICK)) {
-                handleSteering(controls.get(CONTROL.LEFT_CLICK));
+            final CONTROL control = controls.containsKey(CONTROL.RIGHT_CLICK) ? CONTROL.RIGHT_CLICK : CONTROL.LEFT_CLICK;
+            if (event.getHand() == EquipmentSlot.HAND && controls.containsKey(control)) {
+                handleSteering(controls.get(control));
             }
         } finally {
             lock.unlock();
@@ -365,13 +414,13 @@ public class MenuConvIO extends ChatConvIO {
     }
 
     private void updateDisplay(final Scroll scroll) {
-        if (chatDisplay == null && scroll != Scroll.NONE) {
+        if (state.isEnded() || scroll != Scroll.NONE && (chatDisplay == null || chatDisplay.isTyping())) {
             return;
         }
         if (chatDisplay == null) {
             chatDisplay = new Display(settings, componentLineWrapper, npcName, npcText, new ArrayList<>(options.values()));
         }
-        conv.sendMessage(chatDisplay.getDisplay(scroll));
+        renderer.render(conv, onlineProfile, npcName, chatDisplay.getDisplay(scroll));
     }
 
     private Scroll getScrollDirection(final int start, final int end) {
@@ -381,6 +430,37 @@ public class MenuConvIO extends ChatConvIO {
             }
         }
         return Scroll.UP;
+    }
+
+    /**
+     * Shows the display lines to the player.
+     */
+    @FunctionalInterface
+    public interface Renderer {
+
+        /**
+         * Sends the lines as one chat message.
+         */
+        Renderer CHAT = (conv, profile, npcName, lines) -> conv.sendMessage(Component.join(JoinConfiguration.newlines(), lines));
+
+        /**
+         * Shows the current screen. May be called off the main thread.
+         *
+         * @param conv    the conversation
+         * @param profile the player to show it to
+         * @param npcName the name of the NPC
+         * @param lines   the lines of the current screen
+         */
+        void render(Conversation conv, OnlineProfile profile, Component npcName, List<Component> lines);
+
+        /**
+         * Removes whatever {@link #render} showed, called once when the conversation ends.
+         *
+         * @param profile the player to hide it from
+         */
+        default void hide(final OnlineProfile profile) {
+            // Chat needs no cleanup
+        }
     }
 
     /**
@@ -424,7 +504,11 @@ public class MenuConvIO extends ChatConvIO {
         /**
          * The player left-clicked.
          */
-        LEFT_CLICK
+        LEFT_CLICK,
+        /**
+         * The player right-clicked.
+         */
+        RIGHT_CLICK
     }
 
     /**

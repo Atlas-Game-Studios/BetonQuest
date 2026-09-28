@@ -26,6 +26,7 @@ import org.betonquest.betonquest.compatibility.mcmmo.McMMOIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmocore.MMOCoreIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmoitems.MMOItemsIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmolib.MythicLibIntegrator;
+import org.betonquest.betonquest.compatibility.mythichud.MythicHudIntegrator;
 import org.betonquest.betonquest.compatibility.mythicmobs.MythicMobsIntegrator;
 import org.betonquest.betonquest.compatibility.nexo.NexoIntegrator;
 import org.betonquest.betonquest.compatibility.npc.citizens.CitizensIntegrator;
@@ -173,5 +174,6 @@ public final class BundledCompatibility {
         // Atlas
         register(SimpleNPCsIntegrator.PREFIX, () -> new SimpleNPCsIntegrator());
         register("AtlasItemRegistry", () -> new AtlasItemIntegrator());
+        register("MythicHUD", () -> new MythicHudIntegrator());
     }
 }

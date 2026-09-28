@@ -1,5 +1,60 @@
 # Put patches for BetonQuest's config here. The syntax is documented in the docs/API/Configuration-Files.md
-# Atlas: keep this the newest entry, renumber after upstream's on rebase
+# Atlas: keep these the newest entries, renumber after upstream's on rebase
+3.3.0.5:
+  - type: SET
+    key: hook.mythichud
+    value: true
+  - type: SET
+    key: conversation.io.mythichud.popup
+    value: betonquest-conversation
+  - type: SET
+    key: conversation.io.mythichud.line_length
+    value: 232
+  - type: SET
+    key: conversation.io.mythichud.line_count
+    value: 7
+  - type: SET
+    key: conversation.io.mythichud.line_fill_before
+    value: 0
+  - type: SET
+    key: conversation.io.mythichud.refresh_delay
+    value: 1200
+  - type: SET
+    key: conversation.io.mythichud.typewriter_speed
+    value: 1
+  - type: SET
+    key: conversation.io.mythichud.typewriter_sound
+    value: minecraft:block.note_block.hat
+  - type: SET
+    key: conversation.io.mythichud.typewriter_sound_volume
+    value: 0.3
+  - type: SET
+    key: conversation.io.mythichud.typewriter_sound_pitch
+    value: 1.6
+  - type: SET
+    key: conversation.io.mythichud.npc_name_type
+    value: none
+  - type: SET
+    key: conversation.io.mythichud.control_select
+    value: right_click
+  - type: SET
+    key: conversation.io.mythichud.control_move
+    value: scroll
+  - type: SET
+    key: conversation.io.mythichud.control_cancel
+    value: sneak
+  - type: SET
+    key: conversation.io.mythichud.option_text
+    value: '@[minimessage]  <gray>{option_text}'
+  - type: SET
+    key: conversation.io.mythichud.option_text_wrap
+    value: '@[minimessage]  <gray>'
+  - type: SET
+    key: conversation.io.mythichud.option_selected_text
+    value: "@[minimessage]\uE0A0 <white>{option_text}"
+  - type: SET
+    key: conversation.io.mythichud.option_selected_text_wrap
+    value: '@[minimessage]   <white>'
 3.3.0.4:
   - type: SET
     key: hook.simplenpcs

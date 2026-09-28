@@ -47,6 +47,7 @@ softdepend:
   - DiscordSRV
   - SimpleNPCs
   - AtlasItemRegistry
+  - MythicHUD
 commands:
   journal:
     description: Adds journal to your inventory
