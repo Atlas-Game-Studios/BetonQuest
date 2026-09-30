@@ -89,7 +89,7 @@ conversation:
       npc_name_type: none
       control_select: right_click
       control_move: scroll
-      control_cancel: sneak
+      control_cancel: ''
       option_text: '@[minimessage]  <gray>{option_text}'
       option_text_wrap: '@[minimessage]  <gray>'
       option_selected_text: '@[minimessage]<#ff8a31>»</#ff8a31> <white>{option_text}'

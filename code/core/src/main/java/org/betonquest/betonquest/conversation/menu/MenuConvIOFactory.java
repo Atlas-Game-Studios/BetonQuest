@@ -120,15 +120,22 @@ public class MenuConvIOFactory implements ConversationIOFactory {
     }
 
     /**
-     * Creates a menu factory with the same controls that shows its lines elsewhere.
+     * Creates a menu factory that shows its lines elsewhere.
      *
      * @param overrideSection config section whose keys override {@code conversation.io.menu}
      * @param renderer        where the display lines are shown
+     * @param inputFunction   the function to create the input object with actions
      * @return the new factory
      */
-    public MenuConvIOFactory withRenderer(final String overrideSection, final MenuConvIO.Renderer renderer) {
+    public MenuConvIOFactory withRenderer(final String overrideSection, final MenuConvIO.Renderer renderer,
+                                          final TriFunction<Player, ConversationAction, Boolean, ConversationSession> inputFunction) {
         return new MenuConvIOFactory(loggerFactory, config, plugin, localizations, inputFunction, textParser, fontRegistry,
                 colors, overrideSection, renderer);
+    }
+
+    @Override
+    public boolean usesChat() {
+        return renderer == MenuConvIO.Renderer.CHAT;
     }
 
     @Override
@@ -174,6 +181,7 @@ public class MenuConvIOFactory implements ConversationIOFactory {
     private List<MenuConvIO.CONTROL> controls(final String string, final String name) throws QuestException {
         try {
             return Arrays.stream(string.split(","))
+                    .filter(s -> !s.isBlank())
                     .map(s -> s.toUpperCase(Locale.ROOT))
                     .map(MenuConvIO.CONTROL::valueOf).toList();
         } catch (final IllegalArgumentException e) {

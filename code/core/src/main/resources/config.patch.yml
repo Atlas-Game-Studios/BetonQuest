@@ -42,7 +42,7 @@
     value: scroll
   - type: SET
     key: conversation.io.mythichud.control_cancel
-    value: sneak
+    value: ''
   - type: SET
     key: conversation.io.mythichud.option_text
     value: '@[minimessage]  <gray>{option_text}'

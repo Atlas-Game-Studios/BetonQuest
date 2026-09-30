@@ -19,6 +19,7 @@ import org.betonquest.betonquest.api.service.action.ActionManager;
 import org.betonquest.betonquest.api.service.condition.ConditionManager;
 import org.betonquest.betonquest.api.service.identifier.Identifiers;
 import org.betonquest.betonquest.conversation.interceptor.Interceptor;
+import org.betonquest.betonquest.conversation.interceptor.NonInterceptingInterceptorFactory;
 import org.betonquest.betonquest.database.Saver;
 import org.betonquest.betonquest.database.Saver.Record;
 import org.betonquest.betonquest.database.UpdateType;
@@ -219,8 +220,10 @@ public class Conversation {
 
         this.conversationProcessor = conversationProcessor;
         this.data = conversationProcessor.getData(conversationID);
-        this.inOut = data.getPublicData().convIO().getValue(onlineProfile).parse(this, onlineProfile);
-        this.interceptor = data.getPublicData().interceptor().getValue(onlineProfile).create(onlineProfile);
+        final ConversationIOFactory ioFactory = data.getPublicData().convIO().getValue(onlineProfile);
+        this.inOut = ioFactory.parse(this, onlineProfile);
+        this.interceptor = (ioFactory.usesChat() ? data.getPublicData().interceptor().getValue(onlineProfile)
+                : new NonInterceptingInterceptorFactory()).create(onlineProfile);
     }
 
     /**

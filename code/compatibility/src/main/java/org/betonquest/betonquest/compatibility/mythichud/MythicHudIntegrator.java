@@ -6,6 +6,7 @@ import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.integration.Integration;
 import org.betonquest.betonquest.conversation.ConversationIOFactory;
 import org.betonquest.betonquest.conversation.menu.MenuConvIOFactory;
+import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 
 /**
@@ -17,6 +18,21 @@ public class MythicHudIntegrator implements Integration {
      * The config section of the conversation IO, overriding keys of {@code conversation.io.menu}.
      */
     private static final String SECTION = "conversation.io.mythichud";
+
+    /**
+     * Does not mount the player, so they can walk away to end the conversation like with tellraw.
+     */
+    private static final ConversationSession FREE_MOVEMENT = new ConversationSession() {
+        @Override
+        public void begin() {
+            // Empty
+        }
+
+        @Override
+        public void end() {
+            // Empty
+        }
+    };
 
     /**
      * The empty default constructor.
@@ -39,7 +55,8 @@ public class MythicHudIntegrator implements Integration {
         }
         final String popup = plugin.getPluginConfig().getString(SECTION + ".popup", "betonquest-conversation");
         registry.register("mythichud", menuFactory.withRenderer(SECTION,
-                new MythicHudRenderer(api.loggerFactory().create(MythicHudRenderer.class), popup)));
+                new MythicHudRenderer(api.loggerFactory().create(MythicHudRenderer.class), popup),
+                (player, action, setSpeed) -> FREE_MOVEMENT));
     }
 
     @Override
