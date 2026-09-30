@@ -92,7 +92,7 @@ conversation:
       control_cancel: sneak
       option_text: '@[minimessage]  <gray>{option_text}'
       option_text_wrap: '@[minimessage]  <gray>'
-      option_selected_text: "@[minimessage]\uE0A0 <white>{option_text}"
+      option_selected_text: '@[minimessage]<#ff8a31>»</#ff8a31> <white>{option_text}'
       option_selected_text_wrap: '@[minimessage]   <white>'
     chest:
       show_number: true
