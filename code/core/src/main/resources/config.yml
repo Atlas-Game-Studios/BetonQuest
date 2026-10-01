@@ -30,6 +30,8 @@ language:
   questlang_whitelist: [ ]
 conversation:
   default_io: menu,packetevents,tellraw
+  # Atlas: speaker name of notify io:dialogue speaker:unknown
+  unknown_speaker: '???'
   block_item_transfer: true
   interceptor:
     default: redischat,packetevents,simple
@@ -78,6 +80,19 @@ conversation:
       scroll_down: '@[minimessage]<white>        ↓</white>'
     mythichud:
       popup: betonquest-conversation
+      notice_popup: betonquest-notice
+      notice_lines: 6
+      notice_line_length: 200
+      notice_duration: 8
+      thought_popup: betonquest-thought
+      thought_lines: 4
+      thought_line_length: 280
+      thought_duration: 6
+      options_popup: betonquest-options
+      hint_popup_prefix: betonquest-hint-
+      option_line_length: 120
+      option_line_count: 4
+      close_timeout: 3
       line_length: 232
       line_count: 7
       line_fill_before: 0
@@ -148,6 +163,9 @@ journal:
       text: '@[minimessage]<black>'
 menu:
   default_close: true
+# Atlas: categories of the quest log menu (MenuAPI): id, name (MiniMessage), model (custom model data), slot (-1 hides it)
+questlog:
+  categories: []
 hook:
   citizens: true
   mythicmobs: true
@@ -190,3 +208,5 @@ hook:
   simplenpcs: true
   atlasitemregistry: true
   mythichud: true
+  menuapi: true
+  cartography: true

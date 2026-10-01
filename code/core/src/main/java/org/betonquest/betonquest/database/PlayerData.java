@@ -21,6 +21,7 @@ import org.betonquest.betonquest.database.Saver.Record;
 import org.betonquest.betonquest.feature.journal.Journal;
 import org.betonquest.betonquest.feature.journal.JournalFactory;
 import org.betonquest.betonquest.feature.journal.Pointer;
+import org.betonquest.betonquest.feature.questlog.QuestLogEntry;
 import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -116,6 +117,11 @@ public class PlayerData implements PersistentDataHolder {
     private final Map<String, String> objectives = new ConcurrentHashMap<>();
 
     /**
+     * The quest log entries by full quest identifier.
+     */
+    private final Map<String, QuestLogEntry> questLog = new ConcurrentHashMap<>();
+
+    /**
      * The journal of the player, which contains all journal entries.
      */
     @Nullable
@@ -171,6 +177,7 @@ public class PlayerData implements PersistentDataHolder {
         }
     }
 
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private void loadAllPlayerData() {
         log.debug("Loading player data from database for %s".formatted(profile));
         final Arguments args = new Arguments(profileID);
@@ -192,6 +199,13 @@ public class PlayerData implements PersistentDataHolder {
                 loadJournalPointer(resultSet.getString("pointer"), resultSet.getTimestamp("date").getTime());
             }
         }, "Could not load journal entries.");
+        connector.querySQL(QueryType.SELECT_QUESTLOG, args, resultSet -> {
+            while (resultSet.next()) {
+                questLog.put(resultSet.getString("quest"), new QuestLogEntry(resultSet.getString("stage"),
+                        resultSet.getBoolean("complete"), resultSet.getLong("tracked")));
+            }
+            log.debug("Loaded %d quest log entries for %s".formatted(questLog.size(), profile));
+        }, "Could not load quest log.");
         connector.querySQL(QueryType.SELECT_POINTS, args, resultSet -> {
             while (resultSet.next()) {
                 final String category = resultSet.getString("category");
@@ -506,6 +520,36 @@ public class PlayerData implements PersistentDataHolder {
     }
 
     /**
+     * Returns the quest log entries of this profile.
+     *
+     * @return unmodifiable view of the entries by full quest identifier
+     */
+    public Map<String, QuestLogEntry> getQuestLog() {
+        return Collections.unmodifiableMap(questLog);
+    }
+
+    /**
+     * Adds or replaces a quest log entry and saves it to the database.
+     *
+     * @param quest the full quest identifier
+     * @param entry the new entry
+     */
+    public void setQuestLogEntry(final String quest, final QuestLogEntry entry) {
+        questLog.put(quest, entry);
+        saver.add(new Record(UpdateType.SET_QUESTLOG, profileID, quest, entry.stage(), entry.complete(), entry.tracked()));
+    }
+
+    /**
+     * Removes a quest log entry and deletes it from the database.
+     *
+     * @param quest the full quest identifier
+     */
+    public void removeQuestLogEntry(final String quest) {
+        questLog.remove(quest);
+        saver.add(new Record(UpdateType.REMOVE_QUESTLOG, profileID, quest));
+    }
+
+    /**
      * Purges all profile's data from the database and from this object.
      */
     public void purgePlayer() {
@@ -522,12 +566,14 @@ public class PlayerData implements PersistentDataHolder {
             journal.clear();
         }
         backpack.clear();
+        questLog.clear();
         // clear the database
         saver.add(new Record(UpdateType.DELETE_OBJECTIVES, profileID));
         saver.add(new Record(UpdateType.DELETE_JOURNAL, profileID));
         saver.add(new Record(UpdateType.DELETE_POINTS, profileID));
         saver.add(new Record(UpdateType.DELETE_TAGS, profileID));
         saver.add(new Record(UpdateType.DELETE_BACKPACK, profileID));
+        saver.add(new Record(UpdateType.DELETE_QUESTLOG, profileID));
         saver.add(new Record(UpdateType.UPDATE_CONVERSATION, "null", profileID));
         // update the journal so it's empty
         if (profile.getOnlineProfile().isPresent()) {

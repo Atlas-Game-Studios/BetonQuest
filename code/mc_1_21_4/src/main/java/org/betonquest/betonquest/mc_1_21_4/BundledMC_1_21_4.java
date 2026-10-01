@@ -1,5 +1,6 @@
 package org.betonquest.betonquest.mc_1_21_4;
 
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import org.apache.commons.lang3.function.TriFunction;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.BetonQuestApi;
@@ -10,6 +11,7 @@ import org.betonquest.betonquest.conversation.ConversationColors;
 import org.betonquest.betonquest.conversation.menu.MenuConvIOFactory;
 import org.betonquest.betonquest.conversation.menu.input.ConversationAction;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
+import org.betonquest.betonquest.feature.questlog.QuestLog;
 import org.betonquest.betonquest.item.SimpleQuestItemHandlerRegistry;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 import org.betonquest.betonquest.kernel.registry.feature.NotifyIORegistry;
@@ -60,6 +62,8 @@ public class BundledMC_1_21_4 implements Integration {
 
         componentLoader.get(NotifyIORegistry.class).register("totem", new UpdatedTotemNotifyIOFactory(api.placeholders().manager()));
         api.bukkit().registerEvents(new BundleListener());
+        // Atlas
+        componentLoader.get(QuestLog.class).setScoreFormat(score -> score.numberFormat(NumberFormat.blank()));
     }
 
     @Override

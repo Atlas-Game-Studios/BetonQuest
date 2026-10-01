@@ -1,5 +1,6 @@
 package org.betonquest.betonquest.conversation.menu;
 
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.function.TriFunction;
 import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.common.component.FixedComponentLineWrapper;
@@ -15,6 +16,7 @@ import org.betonquest.betonquest.conversation.ConversationIO;
 import org.betonquest.betonquest.conversation.ConversationIOFactory;
 import org.betonquest.betonquest.conversation.menu.input.ConversationAction;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
+import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -30,6 +32,7 @@ import java.util.Map;
 /**
  * Menu conversation output.
  */
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.TooManyMethods"})
 public class MenuConvIOFactory implements ConversationIOFactory {
 
     /**
@@ -82,6 +85,12 @@ public class MenuConvIOFactory implements ConversationIOFactory {
      * Where the display lines are shown.
      */
     private final MenuConvIO.Renderer renderer;
+
+    /**
+     * Shows lines for {@link #showLine}, created on first use.
+     */
+    @Nullable
+    private LinePresenter presenter;
 
     /**
      * Create a new Menu conversation IO factory.
@@ -143,7 +152,68 @@ public class MenuConvIOFactory implements ConversationIOFactory {
         final MenuConvIOSettings settings = MenuConvIOSettings.fromConfigurationSection(textParser, settingsSection());
         final FixedComponentLineWrapper componentLineWrapper = new FixedComponentLineWrapper(fontRegistry, settings.lineLength());
         return new MenuConvIO(loggerFactory.create(MenuConvIO.class), config, plugin, localizations, inputFunction, conversation, onlineProfile, colors, settings,
-                componentLineWrapper, getControls(settings), renderer);
+                componentLineWrapper, new FixedComponentLineWrapper(fontRegistry, settings.optionLineLength()), getControls(settings), renderer);
+    }
+
+    /**
+     * Shows a single NPC line without options the way this IO shows conversation screens,
+     * including the typewriter effect, which right-clicking skips. A new line replaces the previous one.
+     *
+     * @param onlineProfile the player to show the line to
+     * @param speaker       the name of the speaker, empty for narration
+     * @param text          the line to show
+     * @param onTyped       called once the line is fully shown
+     * @return the id of the line, for {@link #hideLine(OnlineProfile, long)}
+     * @throws QuestException if the settings are invalid
+     */
+    public long showLine(final OnlineProfile onlineProfile, final Component speaker, final Component text,
+                         final Runnable onTyped) throws QuestException {
+        final MenuConvIOSettings settings = MenuConvIOSettings.fromConfigurationSection(textParser, settingsSection());
+        return linePresenter().show(settings, onlineProfile, speaker, text, onTyped);
+    }
+
+    /**
+     * Removes a line shown with {@link #showLine} if no other line replaced it since.
+     *
+     * @param onlineProfile the player to hide the line from
+     * @param lineId        the id {@link #showLine} returned
+     */
+    public void hideLine(final OnlineProfile onlineProfile, final long lineId) {
+        linePresenter().hide(onlineProfile, lineId);
+    }
+
+    /**
+     * Get the default conversation IO if it shows screens with its own renderer, like MythicHUD.
+     *
+     * @param registry the conversation IO registry
+     * @param config   the config with {@code conversation.default_io}
+     * @return the default IO, or null if it is not a menu IO or renders to chat
+     * @throws QuestException if no default IO is registered
+     */
+    @Nullable
+    public static MenuConvIOFactory defaultScreen(final ConversationIORegistry registry,
+                                                  final ConfigAccessor config) throws QuestException {
+        final ConversationIOFactory conversationIO = registry.getFactory(
+                List.of(config.getString("conversation.default_io", "menu,tellraw").split(",")));
+        return conversationIO instanceof final MenuConvIOFactory menu && !menu.usesChat() ? menu : null;
+    }
+
+    /**
+     * Removes a line shown with {@link #showLine}.
+     *
+     * @param onlineProfile the player to hide the line from
+     */
+    public void hideLine(final OnlineProfile onlineProfile) {
+        linePresenter().hide(onlineProfile);
+    }
+
+    private LinePresenter linePresenter() {
+        // Only called on the main thread, by cutscene actions
+        if (presenter == null) {
+            presenter = new LinePresenter(plugin, renderer, fontRegistry);
+            plugin.getServer().getPluginManager().registerEvents(presenter, plugin);
+        }
+        return presenter;
     }
 
     private ConfigurationSection settingsSection() {

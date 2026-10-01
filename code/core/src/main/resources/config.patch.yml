@@ -1,5 +1,65 @@
 # Put patches for BetonQuest's config here. The syntax is documented in the docs/API/Configuration-Files.md
 # Atlas: keep these the newest entries, renumber after upstream's on rebase
+3.3.0.8:
+  - type: SET
+    key: conversation.io.mythichud.option_line_length
+    value: 120
+  - type: SET
+    key: conversation.io.mythichud.option_line_count
+    value: 4
+  - type: SET
+    key: conversation.io.mythichud.close_timeout
+    value: 3
+3.3.0.7:
+  - type: SET
+    key: conversation.io.mythichud.notice_popup
+    value: betonquest-notice
+  - type: SET
+    key: conversation.io.mythichud.notice_lines
+    value: 6
+  - type: SET
+    key: conversation.io.mythichud.notice_line_length
+    value: 200
+  - type: SET
+    key: conversation.io.mythichud.notice_duration
+    value: 8
+  - type: SET
+    key: conversation.io.mythichud.thought_popup
+    value: betonquest-thought
+  - type: SET
+    key: conversation.io.mythichud.thought_lines
+    value: 4
+  - type: SET
+    key: conversation.io.mythichud.thought_line_length
+    value: 280
+  - type: SET
+    key: conversation.io.mythichud.thought_duration
+    value: 6
+  - type: SET
+    key: conversation.unknown_speaker
+    value: '???'
+  - type: SET
+    key: conversation.io.mythichud.options_popup
+    value: betonquest-options
+  - type: SET
+    key: conversation.io.mythichud.hint_popup_prefix
+    value: betonquest-hint-
+  - type: SET
+    key: conversation.io.mythichud.option_line_length
+    value: 150
+  - type: SET
+    key: conversation.io.mythichud.option_line_count
+    value: 5
+  - type: SET
+    key: conversation.io.mythichud.close_timeout
+    value: 15
+3.3.0.6:
+  - type: SET
+    key: hook.menuapi
+    value: true
+  - type: SET
+    key: hook.cartography
+    value: true
 3.3.0.5:
   - type: SET
     key: hook.mythichud

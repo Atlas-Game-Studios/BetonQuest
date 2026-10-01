@@ -48,6 +48,8 @@ softdepend:
   - SimpleNPCs
   - AtlasItemRegistry
   - MythicHUD
+  - MenuAPI
+  - Cartography
 commands:
   journal:
     description: Adds journal to your inventory
@@ -69,6 +71,15 @@ commands:
     usage: /<command>
     permission: betonquest.cancelquest
     aliases: [ bcq, bcancelquest, betoncancelquest, betonquestcancelquest ]
+  questlog:
+    description: Quest log admin command
+    usage: /<command> open|clear-trackers <player> | add|set <player> <quest> <stage> | complete|del <player> <quest>
+    permission: betonquest.admin
+  # TODO(remove after package rewrite): legacy SimpleQuestJournal command, quests as Package.quest
+  sqj:
+    description: Legacy SimpleQuestJournal command
+    usage: /<command> open|clear-trackers <player> | add|set <player> <Package.quest> <stage> | complete|del <player> <Package.quest>
+    permission: betonquest.admin
   questlang:
     description: Changes the language
     usage: /<command> lang

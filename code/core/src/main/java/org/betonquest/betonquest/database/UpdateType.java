@@ -33,6 +33,14 @@ public enum UpdateType {
      */
     ADD_JOURNAL(prefix -> "INSERT INTO " + prefix + "journal (profileID, pointer, date) VALUES (?, ?, ?);"),
     /**
+     * Adds or replaces a quest log entry. ProfileID, quest, stage, complete, tracked.
+     */
+    SET_QUESTLOG(prefix -> "REPLACE INTO " + prefix + "questlog (profileID, quest, stage, complete, tracked) VALUES (?, ?, ?, ?, ?);"),
+    /**
+     * Removes a quest log entry. ProfileID, quest.
+     */
+    REMOVE_QUESTLOG(prefix -> "DELETE FROM " + prefix + "questlog WHERE profileID = ? AND quest = ?;"),
+    /**
      * Add single itemstack. ProfileID, serialized item, amount.
      */
     ADD_BACKPACK(prefix -> "INSERT INTO " + prefix + "backpack (profileID, serialized, amount) VALUES (?, ?, ?);"),
@@ -102,6 +110,10 @@ public enum UpdateType {
      */
     DELETE_BACKPACK(prefix -> "DELETE FROM " + prefix + "backpack WHERE profileID = ?;"),
     /**
+     * Deletes the quest log of a profile. ProfileID.
+     */
+    DELETE_QUESTLOG(prefix -> "DELETE FROM " + prefix + "questlog WHERE profileID = ?;"),
+    /**
      * Deletes the player. PlayerID.
      */
     DELETE_PLAYER(prefix -> "DELETE FROM " + prefix + "player WHERE playerID = ?;"),
@@ -164,6 +176,10 @@ public enum UpdateType {
      * Drops the backpack table.
      */
     DROP_BACKPACK(prefix -> "DROP TABLE " + prefix + "backpack"),
+    /**
+     * Drops the quest log table.
+     */
+    DROP_QUESTLOG(prefix -> "DROP TABLE " + prefix + "questlog"),
     /**
      * Drops the player table.
      */

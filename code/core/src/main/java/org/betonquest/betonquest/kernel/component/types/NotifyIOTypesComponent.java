@@ -1,8 +1,10 @@
 package org.betonquest.betonquest.kernel.component.types;
 
+import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.dependency.DependencyProvider;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
 import org.betonquest.betonquest.kernel.processor.quest.PlaceholderProcessor;
+import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 import org.betonquest.betonquest.kernel.registry.feature.NotifyIORegistry;
 import org.betonquest.betonquest.lib.dependency.component.AbstractCoreComponent;
 import org.betonquest.betonquest.notify.SuppressNotifyIOFactory;
@@ -10,6 +12,7 @@ import org.betonquest.betonquest.notify.io.ActionBarNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.AdvancementNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.BossBarNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.ChatNotifyIOFactory;
+import org.betonquest.betonquest.notify.io.DialogueNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.SoundIOFactory;
 import org.betonquest.betonquest.notify.io.SubTitleNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.TitleNotifyIOFactory;
@@ -32,7 +35,8 @@ public class NotifyIOTypesComponent extends AbstractCoreComponent {
 
     @Override
     public Set<Class<?>> requires() {
-        return Set.of(Plugin.class, NotifyIORegistry.class, Conversations.class, PlaceholderProcessor.class);
+        return Set.of(Plugin.class, NotifyIORegistry.class, Conversations.class, PlaceholderProcessor.class,
+                ConversationIORegistry.class, ConfigAccessor.class);
     }
 
     @Override
@@ -51,5 +55,12 @@ public class NotifyIOTypesComponent extends AbstractCoreComponent {
         notifyIORegistry.register("totem", new TotemNotifyIOFactory(placeholderProcessor));
         notifyIORegistry.register("subtitle", new SubTitleNotifyIOFactory(placeholderProcessor));
         notifyIORegistry.register("sound", new SoundIOFactory(placeholderProcessor));
+        // Atlas
+        notifyIORegistry.register("dialogue", new DialogueNotifyIOFactory(placeholderProcessor, plugin,
+                getDependency(ConversationIORegistry.class), notifyIORegistry, getDependency(ConfigAccessor.class)));
+        // Chat until an integration like MythicHUD shows them in a HUD
+        final ChatNotifyIOFactory chat = new ChatNotifyIOFactory(placeholderProcessor, conversations);
+        notifyIORegistry.register("notice", chat);
+        notifyIORegistry.register("thought", chat);
     }
 }

@@ -44,6 +44,7 @@ import org.betonquest.betonquest.kernel.component.PlayerHiderComponent;
 import org.betonquest.betonquest.kernel.component.PluginMessageComponent;
 import org.betonquest.betonquest.kernel.component.PostEnableComponent;
 import org.betonquest.betonquest.kernel.component.ProfileProviderComponent;
+import org.betonquest.betonquest.kernel.component.QuestLogComponent;
 import org.betonquest.betonquest.kernel.component.QuestPackageManagerComponent;
 import org.betonquest.betonquest.kernel.component.RPGMenuComponent;
 import org.betonquest.betonquest.kernel.component.ReloaderComponent;
@@ -118,6 +119,7 @@ public final class BetonQuestComponents {
                 new PlaceholdersComponent(),
                 new ItemsComponent(),
                 new CompassComponent(),
+                new QuestLogComponent(),
                 new ConversationsComponent(),
                 new NpcsComponent(),
                 new CancelersComponent(),

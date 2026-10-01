@@ -36,7 +36,7 @@ import static org.betonquest.betonquest.item.typehandler.QuestHandler.QUEST_ITEM
 /**
  * Connects to and uses a SQLite database.
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public class SQLite extends Database {
 
     /**
@@ -67,6 +67,7 @@ public class SQLite extends Database {
         migrations.put(new MigrationKey("betonquest", 5), this::migration5);
         migrations.put(new MigrationKey("betonquest", 6), this::migration6);
         migrations.put(new MigrationKey("betonquest", 7), this::migration7);
+        migrations.put(new MigrationKey("atlas", 1), this::atlasMigration1);
         return migrations;
     }
 
@@ -370,6 +371,19 @@ public class SQLite extends Database {
         log.debug("Running SQLite migration 7 (auto-once tag rename migration)...");
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("UPDATE " + prefix + "tags SET tag = REPLACE(tag, 'global-', 'auto-once-') WHERE tag LIKE '%>global-%'");
+        }
+    }
+
+    private void atlasMigration1(final Connection connection) throws SQLException {
+        log.debug("Running SQLite Atlas migration 1 (quest log table)...");
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS " + prefix + "questlog ("
+                    + "profileID VARCHAR(36) NOT NULL, "
+                    + "quest VARCHAR(255) NOT NULL, "
+                    + "stage VARCHAR(255) NOT NULL, "
+                    + "complete BOOLEAN NOT NULL DEFAULT FALSE, "
+                    + "tracked BIGINT NOT NULL DEFAULT 0, "
+                    + "PRIMARY KEY (profileID, quest));");
         }
     }
 }

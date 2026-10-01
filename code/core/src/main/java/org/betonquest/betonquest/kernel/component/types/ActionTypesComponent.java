@@ -1,6 +1,7 @@
 package org.betonquest.betonquest.kernel.component.types;
 
 import org.betonquest.betonquest.api.LanguageProvider;
+import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.config.Localizations;
 import org.betonquest.betonquest.api.data.Persistence;
 import org.betonquest.betonquest.api.dependency.DependencyProvider;
@@ -19,6 +20,7 @@ import org.betonquest.betonquest.data.PlayerDataStorage;
 import org.betonquest.betonquest.database.GlobalData;
 import org.betonquest.betonquest.database.Saver;
 import org.betonquest.betonquest.kernel.processor.feature.CancelerProcessor;
+import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 import org.betonquest.betonquest.kernel.registry.quest.ActionTypeRegistry;
 import org.betonquest.betonquest.lib.dependency.component.AbstractCoreComponent;
 import org.betonquest.betonquest.playerhider.PlayerHider;
@@ -34,6 +36,7 @@ import org.betonquest.betonquest.quest.action.command.SudoActionFactory;
 import org.betonquest.betonquest.quest.action.compass.CompassActionFactory;
 import org.betonquest.betonquest.quest.action.conversation.CancelConversationActionFactory;
 import org.betonquest.betonquest.quest.action.conversation.ConversationActionFactory;
+import org.betonquest.betonquest.quest.action.cutscene.CutsceneActionFactory;
 import org.betonquest.betonquest.quest.action.damage.DamageActionFactory;
 import org.betonquest.betonquest.quest.action.door.DoorActionFactory;
 import org.betonquest.betonquest.quest.action.drop.DropActionFactory;
@@ -113,7 +116,8 @@ public class ActionTypesComponent extends AbstractCoreComponent {
                 Localizations.class, LanguageProvider.class, Saver.class, TextParser.class, Instructions.class,
                 Persistence.class, ActionTypeRegistry.class, Conversations.class, ActionManager.class,
                 ConditionManager.class, ObjectiveManager.class, NpcManager.class, CompassManager.class,
-                CancelerProcessor.class, DefaultNpcHider.class, PlayerHider.class);
+                CancelerProcessor.class, DefaultNpcHider.class, PlayerHider.class, ConfigAccessor.class,
+                ConversationIORegistry.class);
     }
 
     @Override
@@ -135,6 +139,8 @@ public class ActionTypesComponent extends AbstractCoreComponent {
         final Instructions instructions = getDependency(Instructions.class);
         final ActionTypeRegistry actionTypes = getDependency(ActionTypeRegistry.class);
         final ActionManager actionManager = getDependency(ActionManager.class);
+        final ConfigAccessor config = getDependency(ConfigAccessor.class);
+        final ConversationIORegistry conversationIORegistry = getDependency(ConversationIORegistry.class);
         final ConditionManager conditionManager = getDependency(ConditionManager.class);
         final ObjectiveManager objectiveManager = getDependency(ObjectiveManager.class);
         final NpcManager npcManager = getDependency(NpcManager.class);
@@ -153,6 +159,7 @@ public class ActionTypesComponent extends AbstractCoreComponent {
         actionTypes.register("compass", new CompassActionFactory(compassManager, persistence));
         actionTypes.registerCombined("command", new CommandActionFactory(loggerFactory, server));
         actionTypes.register("conversation", new ConversationActionFactory(conversations));
+        actionTypes.register("cutscene", new CutsceneActionFactory(plugin, actionManager, config, conversationIORegistry));
         actionTypes.register("damage", new DamageActionFactory());
         actionTypes.register("deleffect", new DeleteEffectActionFactory());
         actionTypes.registerCombined("deleteglobalpoint", new DeleteGlobalPointActionFactory(globalData));

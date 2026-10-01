@@ -3,11 +3,18 @@ package org.betonquest.betonquest.compatibility.mythichud;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.QuestException;
+import org.betonquest.betonquest.api.common.component.FixedComponentLineWrapper;
+import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.integration.Integration;
+import org.betonquest.betonquest.api.service.placeholder.PlaceholderManager;
 import org.betonquest.betonquest.conversation.ConversationIOFactory;
 import org.betonquest.betonquest.conversation.menu.MenuConvIOFactory;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
+import org.betonquest.betonquest.kernel.registry.feature.NotifyIORegistry;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Integrator for MythicHUD.
@@ -55,8 +62,27 @@ public class MythicHudIntegrator implements Integration {
         }
         final String popup = plugin.getPluginConfig().getString(SECTION + ".popup", "betonquest-conversation");
         registry.register("mythichud", menuFactory.withRenderer(SECTION,
-                new MythicHudRenderer(api.loggerFactory().create(MythicHudRenderer.class), popup),
+                new MythicHudRenderer(api.loggerFactory().create(MythicHudRenderer.class), popup,
+                        plugin.getPluginConfig().getString(SECTION + ".options_popup", "betonquest-options"),
+                        plugin.getPluginConfig().getString(SECTION + ".hint_popup_prefix", "betonquest-hint-")),
                 (player, action, setSpeed) -> FREE_MOVEMENT));
+
+        final NotifyIORegistry notifyIORegistry = plugin.getComponentLoader().get(NotifyIORegistry.class);
+        final PlaceholderManager placeholders = api.placeholders().manager();
+        final MythicHudNotifyIO.Settings notice = popupSettings(plugin.getPluginConfig(), api, "notice", 6, 200, 8);
+        final MythicHudNotifyIO.Settings thought = popupSettings(plugin.getPluginConfig(), api, "thought", 4, 280, 6);
+        notifyIORegistry.register("notice", (pack, data) -> new MythicHudNotifyIO(placeholders, pack, data, notice, null));
+        notifyIORegistry.register("thought", (pack, data) -> new MythicHudNotifyIO(placeholders, pack, data, thought,
+                (lines, profile) -> notifyIORegistry.getFactory(List.of("notice")).create(pack, Map.of()).sendNotify(lines, profile)));
+    }
+
+    private MythicHudNotifyIO.Settings popupSettings(final ConfigAccessor config, final BetonQuestApi api, final String name,
+                                                     final int lines, final int lineLength, final int duration) {
+        final String prefix = SECTION + "." + name + "_";
+        return new MythicHudNotifyIO.Settings(config.getString(prefix + "popup", "betonquest-" + name),
+                config.getInt(prefix + "lines", lines),
+                new FixedComponentLineWrapper(api.fonts(), config.getInt(prefix + "line_length", lineLength)),
+                config.getInt(prefix + "duration", duration));
     }
 
     @Override

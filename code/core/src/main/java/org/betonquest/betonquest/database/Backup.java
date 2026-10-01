@@ -146,7 +146,7 @@ public final class Backup {
             }
             final FileConfigAccessor config = configAccessorFactory.create(databaseBackupFile);
             final String[] tables = {"objectives", "tags", "points", "journals", "player", "backpack", "global_points",
-                    "global_tags", "migration", "player_profile", "profile"};
+                    "global_tags", "migration", "player_profile", "profile", "questlog"};
             for (final String table : tables) {
                 log.debug("Loading " + table);
                 final String enumName = ("LOAD_ALL_" + table).toUpperCase(Locale.ROOT);
@@ -236,6 +236,7 @@ public final class Backup {
         con.updateSQL(UpdateType.DROP_POINTS, args);
         con.updateSQL(UpdateType.DROP_JOURNALS, args);
         con.updateSQL(UpdateType.DROP_BACKPACK, args);
+        con.updateSQL(UpdateType.DROP_QUESTLOG, args);
         con.updateSQL(UpdateType.DROP_GLOBAL_POINTS, args);
         con.updateSQL(UpdateType.DROP_GLOBAL_TAGS, args);
         con.updateSQL(UpdateType.DROP_MIGRATION, args);
@@ -310,6 +311,17 @@ public final class Backup {
                         journals.getString(key + ".profileID"),
                         journals.getString(key + ".pointer"),
                         journals.getString(key + ".date")));
+            }
+        }
+        final ConfigurationSection questlog = config.getConfigurationSection("questlog");
+        if (questlog != null) {
+            for (final String key : questlog.getKeys(false)) {
+                con.updateSQL(UpdateType.SET_QUESTLOG, new Arguments(
+                        questlog.getString(key + ".profileID"),
+                        questlog.getString(key + ".quest"),
+                        questlog.getString(key + ".stage"),
+                        questlog.getString(key + ".complete"),
+                        questlog.getString(key + ".tracked")));
             }
         }
         final ConfigurationSection backpack = config.getConfigurationSection("backpack");

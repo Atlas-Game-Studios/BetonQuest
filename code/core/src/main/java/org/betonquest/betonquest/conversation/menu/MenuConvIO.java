@@ -14,6 +14,7 @@ import org.betonquest.betonquest.conversation.Conversation;
 import org.betonquest.betonquest.conversation.ConversationColors;
 import org.betonquest.betonquest.conversation.ConversationState;
 import org.betonquest.betonquest.conversation.menu.display.Display;
+import org.betonquest.betonquest.conversation.menu.display.HudDisplay;
 import org.betonquest.betonquest.conversation.menu.display.Scroll;
 import org.betonquest.betonquest.conversation.menu.input.ConversationAction;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -42,8 +44,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * An {@link ChatConvIO} implementation that use player ingame movements to control the conversation.
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.ExcessiveParameterList"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects", "PMD.ExcessiveParameterList", "PMD.CyclomaticComplexity"})
 public class MenuConvIO extends ChatConvIO {
+
+    /**
+     * How often to check whether the last line of a HUD conversation can close, in ticks.
+     */
+    private static final long CLOSE_CHECK_TICKS = 5;
 
     /**
      * The controls that are used in the conversation.
@@ -111,6 +118,29 @@ public class MenuConvIO extends ChatConvIO {
     protected Display chatDisplay;
 
     /**
+     * The paged display used instead of {@link #chatDisplay} for HUD renderers.
+     */
+    @Nullable
+    protected HudDisplay hudDisplay;
+
+    /**
+     * Wraps the options to the width of the options box of HUD renderers.
+     */
+    private final FixedComponentLineWrapper optionWrapper;
+
+    /**
+     * The end callback while a HUD conversation's last line waits to be closed, null otherwise.
+     */
+    @Nullable
+    private Runnable pendingEnd;
+
+    /**
+     * Closes the last line of a HUD conversation when the player does nothing.
+     */
+    @Nullable
+    private BukkitTask closeTask;
+
+    /**
      * Creates a new MenuConvIO instance.
      *
      * @param log                  the logger that will be used for logging
@@ -123,6 +153,7 @@ public class MenuConvIO extends ChatConvIO {
      * @param colors               the colors used in the conversation
      * @param settings             the settings for the conversation IO
      * @param componentLineWrapper the component line wrapper to use for the conversation
+     * @param optionWrapper        wraps the options to the width of the options box of HUD renderers
      * @param controls             the used controls
      * @param renderer             where the display lines are shown
      */
@@ -131,11 +162,12 @@ public class MenuConvIO extends ChatConvIO {
                       final TriFunction<Player, ConversationAction, Boolean, ConversationSession> inputFunction,
                       final Conversation conv, final OnlineProfile onlineProfile, final ConversationColors colors,
                       final MenuConvIOSettings settings, final FixedComponentLineWrapper componentLineWrapper,
-                      final Map<CONTROL, ACTION> controls, final Renderer renderer) {
+                      final FixedComponentLineWrapper optionWrapper, final Map<CONTROL, ACTION> controls, final Renderer renderer) {
         super(log, config, plugin, localizations, conv, onlineProfile, colors);
         this.plugin = plugin;
         this.settings = settings;
         this.componentLineWrapper = componentLineWrapper;
+        this.optionWrapper = optionWrapper;
         this.controls = controls;
         this.renderer = renderer;
         this.input = inputFunction.apply(onlineProfile.getPlayer(), new MenuConversationAction(), settings.setSpeed());
@@ -166,7 +198,7 @@ public class MenuConvIO extends ChatConvIO {
             return;
         }
 
-        if (!options.isEmpty()) {
+        if (!options.isEmpty() || renderer.isHud()) {
             start();
         }
 
@@ -191,16 +223,22 @@ public class MenuConvIO extends ChatConvIO {
     }
 
     private void startTyping() {
+        if (typingRunnable != null) {
+            typingRunnable.cancel();
+        }
         typingRunnable = new BukkitRunnable() {
 
             @Override
             public void run() {
-                final Display display = chatDisplay;
-                if (state.isEnded() || display == null || !display.isTyping()) {
+                if (state.isEnded() || !isTyping()) {
                     this.cancel();
                     return;
                 }
-                display.reveal(settings.typewriterSpeed());
+                if (hudDisplay != null) {
+                    hudDisplay.reveal(settings.typewriterSpeed());
+                } else if (chatDisplay != null) {
+                    chatDisplay.reveal(settings.typewriterSpeed());
+                }
                 updateDisplay();
                 if (settings.typewriterSound() != null) {
                     onlineProfile.getPlayer().playSound(settings.typewriterSound(), Sound.Emitter.self());
@@ -208,6 +246,10 @@ public class MenuConvIO extends ChatConvIO {
             }
         };
         typingRunnable.runTaskTimerAsynchronously(plugin, 1, 1);
+    }
+
+    private boolean isTyping() {
+        return hudDisplay != null ? hudDisplay.isTyping() : chatDisplay != null && chatDisplay.isTyping();
     }
 
     private void cancelRunnables() {
@@ -234,14 +276,61 @@ public class MenuConvIO extends ChatConvIO {
         cancelRunnables();
 
         chatDisplay = null;
+        hudDisplay = null;
 
         super.clear();
     }
 
     @Override
     public void end(final Runnable callback) {
+        if (state.isEnded() || pendingEnd != null) {
+            return;
+        }
+        if (hudDisplay != null && options.isEmpty()) {
+            // Keep the last line until the player has read it and right-clicks, or does nothing for a while
+            pendingEnd = callback;
+            hudDisplay.setClosing(true);
+            scheduleClose();
+            updateDisplay();
+            return;
+        }
+        finishEnd(callback);
+    }
+
+    /**
+     * (Re)starts closing the last line {@code close_timeout} seconds after it is read completely.
+     */
+    private void scheduleClose() {
+        if (closeTask != null) {
+            closeTask.cancel();
+        }
+        final long timeoutTicks = Math.round(settings.closeTimeout() * 20);
+        closeTask = new BukkitRunnable() {
+            /**
+             * Ticks since the last line was read completely.
+             */
+            private long readTicks;
+
+            @Override
+            public void run() {
+                final HudDisplay display = hudDisplay;
+                readTicks = display != null && !display.isRead() ? 0 : readTicks + CLOSE_CHECK_TICKS;
+                final Runnable callback = pendingEnd;
+                if (callback != null && readTicks >= timeoutTicks) {
+                    finishEnd(callback);
+                }
+            }
+        }.runTaskTimer(plugin, CLOSE_CHECK_TICKS, CLOSE_CHECK_TICKS);
+    }
+
+    private void finishEnd(final Runnable callback) {
         if (state.isEnded()) {
             return;
+        }
+        pendingEnd = null;
+        if (closeTask != null) {
+            closeTask.cancel();
+            closeTask = null;
         }
         lock.lock();
         try {
@@ -261,6 +350,10 @@ public class MenuConvIO extends ChatConvIO {
     }
 
     private void passPlayerAnswer() {
+        if (hudDisplay != null) {
+            passHudAnswer(hudDisplay);
+            return;
+        }
         if (chatDisplay == null || isOnCooldown()) {
             return;
         }
@@ -270,6 +363,29 @@ public class MenuConvIO extends ChatConvIO {
             return;
         }
         chatDisplay.getSelection().ifPresent(index -> conv.passPlayerAnswer(index + 1));
+    }
+
+    private void passHudAnswer(final HudDisplay display) {
+        if (isOnCooldown()) {
+            return;
+        }
+        if (pendingEnd != null) {
+            scheduleClose();
+        }
+        if (display.isTyping()) {
+            display.revealAll();
+            updateDisplay();
+        } else if (display.hasNextPage()) {
+            display.nextPage();
+            updateDisplay();
+            if (settings.typewriterSpeed() > 0) {
+                startTyping();
+            }
+        } else if (pendingEnd != null) {
+            finishEnd(pendingEnd);
+        } else if (display.getSelection() >= 0) {
+            conv.passPlayerAnswer(display.getSelection() + 1);
+        }
     }
 
     /**
@@ -414,6 +530,10 @@ public class MenuConvIO extends ChatConvIO {
     }
 
     private void updateDisplay(final Scroll scroll) {
+        if (renderer.isHud()) {
+            updateHudDisplay(scroll);
+            return;
+        }
         if (state.isEnded() || scroll != Scroll.NONE && (chatDisplay == null || chatDisplay.isTyping())) {
             return;
         }
@@ -421,6 +541,20 @@ public class MenuConvIO extends ChatConvIO {
             chatDisplay = new Display(settings, componentLineWrapper, npcName, npcText, new ArrayList<>(options.values()));
         }
         renderer.render(conv, onlineProfile, npcName, chatDisplay.getDisplay(scroll));
+    }
+
+    private void updateHudDisplay(final Scroll scroll) {
+        if (state.isEnded()) {
+            return;
+        }
+        if (hudDisplay == null) {
+            hudDisplay = new HudDisplay(settings, componentLineWrapper, optionWrapper, settings.optionLineCount(),
+                    npcText, new ArrayList<>(options.values()));
+        }
+        if (scroll != Scroll.NONE) {
+            hudDisplay.moveSelection(scroll == Scroll.DOWN);
+        }
+        renderer.renderHud(conv, onlineProfile, npcName, hudDisplay.screen());
     }
 
     private Scroll getScrollDirection(final int start, final int end) {
@@ -446,12 +580,12 @@ public class MenuConvIO extends ChatConvIO {
         /**
          * Shows the current screen. May be called off the main thread.
          *
-         * @param conv    the conversation
+         * @param conv    the conversation, or null for a cutscene line (never passed to {@link #CHAT})
          * @param profile the player to show it to
          * @param npcName the name of the NPC
          * @param lines   the lines of the current screen
          */
-        void render(Conversation conv, OnlineProfile profile, Component npcName, List<Component> lines);
+        void render(@Nullable Conversation conv, OnlineProfile profile, Component npcName, List<Component> lines);
 
         /**
          * Removes whatever {@link #render} showed, called once when the conversation ends.
@@ -460,6 +594,28 @@ public class MenuConvIO extends ChatConvIO {
          */
         default void hide(final OnlineProfile profile) {
             // Chat needs no cleanup
+        }
+
+        /**
+         * Whether this renderer shows a paged dialogue box with a separate options box, see {@link #renderHud}.
+         *
+         * @return true to get {@link #renderHud} calls instead of {@link #render} in conversations
+         */
+        default boolean isHud() {
+            return false;
+        }
+
+        /**
+         * Shows a paged HUD screen. May be called off the main thread.
+         *
+         * @param conv    the conversation, or null for a cutscene line
+         * @param profile the player to show it to
+         * @param npcName the name of the NPC
+         * @param screen  the screen to show
+         */
+        default void renderHud(@Nullable final Conversation conv, final OnlineProfile profile, final Component npcName,
+                               final HudDisplay.HudScreen screen) {
+            render(conv, profile, npcName, screen.lines());
         }
     }
 

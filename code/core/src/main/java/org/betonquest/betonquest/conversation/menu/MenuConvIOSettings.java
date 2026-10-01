@@ -38,6 +38,9 @@ import org.jetbrains.annotations.Nullable;
  * @param optionSelectedTextWrap prefix that gets applied to the start of a new line if the actual text is too long
  * @param scrollUp               arrow format to scroll up
  * @param scrollDown             arrow format to scroll down
+ * @param optionLineLength       width of the options box of HUD renderers
+ * @param optionLineCount        line count of the options box of HUD renderers
+ * @param closeTimeout           seconds after a HUD conversation's last line is read until it closes
  */
 public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin, int lineFillBefore, int refreshDelay,
                                  int rateLimit, int typewriterSpeed, @Nullable Sound typewriterSound, boolean setSpeed, String npcNameType, String npcNameAlign,
@@ -45,7 +48,8 @@ public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin
                                  String controlMove, String controlCancel, VariableComponent npcName,
                                  VariableComponent npcText, Component npcTextWrap, VariableComponent optionText,
                                  Component optionTextWrap, VariableComponent optionSelectedText,
-                                 Component optionSelectedTextWrap, Component scrollUp, Component scrollDown) {
+                                 Component optionSelectedTextWrap, Component scrollUp, Component scrollDown,
+                                 int optionLineLength, int optionLineCount, double closeTimeout) {
 
     /**
      * Creates a new instance of MenuConvIOSettings from a configuration section.
@@ -90,7 +94,9 @@ public record MenuConvIOSettings(int lineLength, int lineCount, int bottomMargin
                 new VariableComponent(textParser.parse(npcText)), textParser.parse(npcTextWrap),
                 new VariableComponent(textParser.parse(optionText)), textParser.parse(optionTextWrap),
                 new VariableComponent(textParser.parse(optionSelectedText)), textParser.parse(optionSelectedTextWrap),
-                textParser.parse(scrollUp), textParser.parse(scrollDown)
+                textParser.parse(scrollUp), textParser.parse(scrollDown),
+                config.getInt("option_line_length", lineLength), config.getInt("option_line_count", lineCount),
+                config.getDouble("close_timeout", 3)
         );
     }
 

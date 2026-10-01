@@ -28,6 +28,10 @@ public enum QueryType {
      */
     SELECT_BACKPACK(prefix -> "SELECT serialized, amount FROM " + prefix + "backpack WHERE profileID = ?;"),
     /**
+     * Get the quest log of a profile. ProfileID.
+     */
+    SELECT_QUESTLOG(prefix -> "SELECT quest, stage, complete, tracked FROM " + prefix + "questlog WHERE profileID = ?;"),
+    /**
      * Get the current language and conversation of a profile. ProfileID.
      */
     SELECT_PLAYER(prefix -> "SELECT language, conversation FROM " + prefix + "player WHERE playerID = ?;"),
@@ -56,6 +60,10 @@ public enum QueryType {
      * Get all backpacks.
      */
     LOAD_ALL_BACKPACK(prefix -> "SELECT * FROM " + prefix + "backpack;"),
+    /**
+     * Get all quest logs.
+     */
+    LOAD_ALL_QUESTLOG(prefix -> "SELECT * FROM " + prefix + "questlog;"),
 
     /**
      * Get all players.
