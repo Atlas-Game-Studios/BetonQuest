@@ -30,7 +30,6 @@ language:
   questlang_whitelist: [ ]
 conversation:
   default_io: menu,packetevents,tellraw
-  # Atlas: speaker name of notify io:dialogue speaker:unknown
   unknown_speaker: '???'
   block_item_transfer: true
   interceptor:
@@ -163,7 +162,6 @@ journal:
       text: '@[minimessage]<black>'
 menu:
   default_close: true
-# Atlas: categories of the quest log menu (MenuAPI): id, name (MiniMessage), model (custom model data), slot (-1 hides it)
 questlog:
   categories: []
 hook:

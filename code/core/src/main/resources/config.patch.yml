@@ -1,5 +1,9 @@
 # Put patches for BetonQuest's config here. The syntax is documented in the docs/API/Configuration-Files.md
 # Atlas: keep these the newest entries, renumber after upstream's on rebase
+3.3.0.9:
+  - type: SET
+    key: questlog.categories
+    value: [ ]
 3.3.0.8:
   - type: SET
     key: conversation.io.mythichud.option_line_length
