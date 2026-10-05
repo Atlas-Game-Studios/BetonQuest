@@ -114,7 +114,7 @@ public class MythicHudRenderer implements MenuConvIO.Renderer {
             return;
         }
         final HudHolder holder = HudHolder.get(profile.getPlayer());
-        holder.removePopup(key);
+        // Not removed first: MythicHUD shows the newest entry, and a remove leaves a gap other threads can send, which flashes
         holder.sendPopup(popup, DURATION, args.stream().map(MiniMessage.miniMessage()::serialize).toArray(String[]::new));
     }
 }

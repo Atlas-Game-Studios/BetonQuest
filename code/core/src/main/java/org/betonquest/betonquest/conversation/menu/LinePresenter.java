@@ -117,6 +117,16 @@ public class LinePresenter implements Listener {
     }
 
     /**
+     * Whether a line is shown and not hidden yet.
+     *
+     * @param onlineProfile the player
+     * @return true if a line is shown
+     */
+    public boolean isShown(final OnlineProfile onlineProfile) {
+        return shown.containsKey(onlineProfile.getPlayerUUID());
+    }
+
+    /**
      * Removes the shown line.
      *
      * @param onlineProfile the player to hide the line from

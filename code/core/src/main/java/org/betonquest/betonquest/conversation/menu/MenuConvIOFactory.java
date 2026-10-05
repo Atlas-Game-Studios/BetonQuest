@@ -14,6 +14,7 @@ import org.betonquest.betonquest.conversation.Conversation;
 import org.betonquest.betonquest.conversation.ConversationColors;
 import org.betonquest.betonquest.conversation.ConversationIO;
 import org.betonquest.betonquest.conversation.ConversationIOFactory;
+import org.betonquest.betonquest.conversation.menu.display.HudDisplay;
 import org.betonquest.betonquest.conversation.menu.input.ConversationAction;
 import org.betonquest.betonquest.conversation.menu.input.ConversationSession;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
@@ -152,7 +153,42 @@ public class MenuConvIOFactory implements ConversationIOFactory {
         final MenuConvIOSettings settings = MenuConvIOSettings.fromConfigurationSection(textParser, settingsSection());
         final FixedComponentLineWrapper componentLineWrapper = new FixedComponentLineWrapper(fontRegistry, settings.lineLength());
         return new MenuConvIO(loggerFactory.create(MenuConvIO.class), config, plugin, localizations, inputFunction, conversation, onlineProfile, colors, settings,
-                componentLineWrapper, new FixedComponentLineWrapper(fontRegistry, settings.optionLineLength()), getControls(settings), renderer);
+                componentLineWrapper, new FixedComponentLineWrapper(fontRegistry, settings.optionLineLength()), getControls(settings),
+                conversationRenderer());
+    }
+
+    /**
+     * The renderer for conversations. Ending one keeps a {@link #showLine} line that replaced its screen,
+     * like an {@code io:dialogue} notify fired by the last option.
+     *
+     * @return the renderer
+     */
+    private MenuConvIO.Renderer conversationRenderer() {
+        return new MenuConvIO.Renderer() {
+            @Override
+            public void render(@Nullable final Conversation conv, final OnlineProfile profile, final Component npcName,
+                               final List<Component> lines) {
+                renderer.render(conv, profile, npcName, lines);
+            }
+
+            @Override
+            public boolean isHud() {
+                return renderer.isHud();
+            }
+
+            @Override
+            public void renderHud(@Nullable final Conversation conv, final OnlineProfile profile, final Component npcName,
+                                  final HudDisplay.HudScreen screen) {
+                renderer.renderHud(conv, profile, npcName, screen);
+            }
+
+            @Override
+            public void hide(final OnlineProfile profile) {
+                if (presenter == null || !presenter.isShown(profile)) {
+                    renderer.hide(profile);
+                }
+            }
+        };
     }
 
     /**
