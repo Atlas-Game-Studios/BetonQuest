@@ -1,5 +1,7 @@
 package org.betonquest.betonquest.kernel.component.types;
 
+import org.betonquest.betonquest.api.common.component.BookPageWrapper;
+import org.betonquest.betonquest.api.common.component.font.FontRegistry;
 import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.dependency.DependencyProvider;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
@@ -10,6 +12,7 @@ import org.betonquest.betonquest.lib.dependency.component.AbstractCoreComponent;
 import org.betonquest.betonquest.notify.SuppressNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.ActionBarNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.AdvancementNotifyIOFactory;
+import org.betonquest.betonquest.notify.io.BookNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.BossBarNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.ChatNotifyIOFactory;
 import org.betonquest.betonquest.notify.io.DialogueNotifyIOFactory;
@@ -36,7 +39,7 @@ public class NotifyIOTypesComponent extends AbstractCoreComponent {
     @Override
     public Set<Class<?>> requires() {
         return Set.of(Plugin.class, NotifyIORegistry.class, Conversations.class, PlaceholderProcessor.class,
-                ConversationIORegistry.class, ConfigAccessor.class);
+                ConversationIORegistry.class, ConfigAccessor.class, FontRegistry.class);
     }
 
     @Override
@@ -58,6 +61,9 @@ public class NotifyIOTypesComponent extends AbstractCoreComponent {
         // Atlas
         notifyIORegistry.register("dialogue", new DialogueNotifyIOFactory(placeholderProcessor, plugin,
                 getDependency(ConversationIORegistry.class), notifyIORegistry, getDependency(ConfigAccessor.class)));
+        // Same page size as the journal
+        notifyIORegistry.register("book", new BookNotifyIOFactory(placeholderProcessor, plugin, notifyIORegistry,
+                new BookPageWrapper(getDependency(FontRegistry.class), 114, 14)));
         // Chat until an integration like MythicHUD shows them in a HUD
         final ChatNotifyIOFactory chat = new ChatNotifyIOFactory(placeholderProcessor, conversations);
         notifyIORegistry.register("notice", chat);

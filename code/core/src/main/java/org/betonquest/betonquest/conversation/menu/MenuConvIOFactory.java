@@ -234,15 +234,6 @@ public class MenuConvIOFactory implements ConversationIOFactory {
         return conversationIO instanceof final MenuConvIOFactory menu && !menu.usesChat() ? menu : null;
     }
 
-    /**
-     * Removes a line shown with {@link #showLine}.
-     *
-     * @param onlineProfile the player to hide the line from
-     */
-    public void hideLine(final OnlineProfile onlineProfile) {
-        linePresenter().hide(onlineProfile);
-    }
-
     private LinePresenter linePresenter() {
         // Only called on the main thread, by cutscene actions
         if (presenter == null) {

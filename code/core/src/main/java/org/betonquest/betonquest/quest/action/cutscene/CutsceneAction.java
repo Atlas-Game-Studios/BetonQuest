@@ -81,31 +81,34 @@ public class CutsceneAction implements PlayerAction {
 
     @Override
     public void execute(final Profile profile) throws QuestException {
-        play(profile, MenuConvIOFactory.defaultScreen(conversationIORegistry, config), 0);
+        play(profile, MenuConvIOFactory.defaultScreen(conversationIORegistry, config), 0, -1);
     }
 
-    private void play(final Profile profile, @Nullable final MenuConvIOFactory screen, final int index) throws QuestException {
+    private void play(final Profile profile, @Nullable final MenuConvIOFactory screen, final int index,
+                      final long lastLine) throws QuestException {
         final Optional<OnlineProfile> online = profile.getOnlineProfile();
         if (online.isEmpty()) {
             return;
         }
         if (index >= steps.size()) {
-            if (screen != null) {
-                screen.hideLine(online.get());
+            // Only our own line: an io:dialogue line fired by the last actions must stay for its duration
+            if (screen != null && lastLine >= 0) {
+                screen.hideLine(online.get(), lastLine);
             }
             return;
         }
         final Step step = steps.get(index);
+        final long[] shownLine = {lastLine};
         final Runnable next = () -> Bukkit.getScheduler().runTaskLater(plugin, () -> {
             try {
-                play(profile, screen, index + 1);
+                play(profile, screen, index + 1, shownLine[0]);
             } catch (final QuestException e) {
                 plugin.getLogger().warning("Cutscene step " + (index + 2) + " failed: " + e.getMessage());
             }
         }, step.delayTicks);
         if (step.msg != null && screen != null) {
             final boolean narration = step.speaker == null;
-            screen.showLine(online.get(), narration ? Component.empty() : plain(step.speaker.getValue(profile)),
+            shownLine[0] = screen.showLine(online.get(), narration ? Component.empty() : plain(step.speaker.getValue(profile)),
                     narration ? LEGACY.deserialize(step.msg.getValue(profile)) : plain(step.msg.getValue(profile)), next);
             return;
         }
