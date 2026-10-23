@@ -24,7 +24,6 @@ import org.betonquest.betonquest.compatibility.jobsreborn.JobsRebornIntegrator;
 import org.betonquest.betonquest.compatibility.luckperms.LuckPermsIntegrator;
 import org.betonquest.betonquest.compatibility.magic.MagicIntegrator;
 import org.betonquest.betonquest.compatibility.mcmmo.McMMOIntegrator;
-import org.betonquest.betonquest.compatibility.menuapi.MenuApiIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmocore.MMOCoreIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmoitems.MMOItemsIntegrator;
 import org.betonquest.betonquest.compatibility.mmogroup.mmolib.MythicLibIntegrator;
@@ -177,7 +176,6 @@ public final class BundledCompatibility {
         register(SimpleNPCsIntegrator.PREFIX, () -> new SimpleNPCsIntegrator());
         register("AtlasItemRegistry", () -> new AtlasItemIntegrator());
         register("MythicHUD", () -> new MythicHudIntegrator());
-        register("MenuAPI", () -> new MenuApiIntegrator());
         register("Cartography", () -> new CartographyIntegrator());
     }
 }

@@ -5,10 +5,14 @@ import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.common.component.ComponentLineWrapper;
 import org.betonquest.betonquest.api.dependency.CoreComponentLoader;
 import org.betonquest.betonquest.api.integration.Integration;
+import org.betonquest.betonquest.api.profile.ProfileProvider;
 import org.betonquest.betonquest.conversation.ConversationColors;
+import org.betonquest.betonquest.feature.questlog.QuestLog;
 import org.betonquest.betonquest.kernel.registry.feature.ConversationIORegistry;
 import org.betonquest.betonquest.mc_1_21_8.conversation.io.CustomClickAnswerListener;
 import org.betonquest.betonquest.mc_1_21_8.conversation.io.DialogConvIOFactory;
+import org.betonquest.betonquest.mc_1_21_8.questlog.QuestJournal;
+import org.bukkit.Bukkit;
 
 /**
  * Allows to register features with Minecraft 1.21.8.
@@ -45,7 +49,15 @@ public class BundledMC_1_21_8 implements Integration {
 
     @Override
     public void postEnable(final BetonQuestApi betonQuestApi) {
-        // Empty
+        // Atlas: the quest journal is a MenuAPI dialog, so it needs MenuAPI on the server
+        if (Bukkit.getPluginManager().isPluginEnabled("MenuAPI")) {
+            final CoreComponentLoader componentLoader = betonQuest.getComponentLoader();
+            final QuestLog questLog = componentLoader.get(QuestLog.class);
+            final QuestJournal journal = new QuestJournal(betonQuestApi.loggerFactory().create(QuestJournal.class),
+                    betonQuest.getPluginConfig().getConfig(), questLog, componentLoader.get(ProfileProvider.class));
+            journal.check();
+            questLog.setMenu(journal::open);
+        }
     }
 
     @Override

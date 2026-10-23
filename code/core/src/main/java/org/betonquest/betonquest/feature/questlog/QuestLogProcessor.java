@@ -12,7 +12,9 @@ import org.betonquest.betonquest.kernel.processor.SectionProcessor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,9 +47,15 @@ public class QuestLogProcessor extends SectionProcessor<QuestLogIdentifier, Ques
             stages.put(stage, new QuestLogQuest.Stage(required(stageSection, stage + ".name"),
                     stageSection.getString(stage + ".compass"), required(stageSection, stage + ".objective")));
         }
-        final String prereq = section.getString("prereq");
+        // prereq: one quest, or a list that must all be done
+        final List<String> prereqs = new ArrayList<>();
+        if (section.isList("prereq")) {
+            section.getStringList("prereq").forEach(prereq -> prereqs.add(fullId(pack, prereq)));
+        } else if (section.getString("prereq") != null) {
+            prereqs.add(fullId(pack, section.getString("prereq")));
+        }
         final QuestLogQuest quest = new QuestLogQuest(required(section, "name"), section.getString("npc"),
-                prereq == null ? null : fullId(pack, prereq), required(section, "category"), stages);
+                prereqs, required(section, "category"), stages);
         return Map.entry(getIdentifier(pack, sectionName), quest);
     }
 

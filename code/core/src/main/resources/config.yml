@@ -90,10 +90,10 @@ conversation:
       options_popup: betonquest-options
       hint_popup_prefix: betonquest-hint-
       option_line_length: 120
-      option_line_count: 4
+      option_line_count: 6
       close_timeout: 3
       line_length: 232
-      line_count: 7
+      line_count: 6
       line_fill_before: 0
       refresh_delay: 1200
       typewriter_speed: 1

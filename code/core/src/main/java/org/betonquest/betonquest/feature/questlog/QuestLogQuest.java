@@ -2,6 +2,7 @@ package org.betonquest.betonquest.feature.questlog;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,11 +10,11 @@ import java.util.Map;
  *
  * @param name     the name of the quest
  * @param npc      who starts the quest, or null
- * @param prereq   the full identifier of the quest that must be done first, or null
+ * @param prereqs  the full identifiers of the quests that must all be done first (empty if none)
  * @param category the category the quest is listed in
  * @param stages   the stages by name, in order
  */
-public record QuestLogQuest(String name, @Nullable String npc, @Nullable String prereq, String category,
+public record QuestLogQuest(String name, @Nullable String npc, List<String> prereqs, String category,
                             Map<String, Stage> stages) {
 
     /**

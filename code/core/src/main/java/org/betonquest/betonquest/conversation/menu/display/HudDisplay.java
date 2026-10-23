@@ -70,7 +70,7 @@ public class HudDisplay {
     private final AtomicInteger selected = new AtomicInteger();
 
     /**
-     * The first shown line of the options.
+     * The first shown option.
      */
     private volatile int optionTop;
 
@@ -248,29 +248,37 @@ public class HudDisplay {
     }
 
     private List<Component> optionWindow() {
-        final List<Component> lines = new ArrayList<>();
-        int first = 0;
-        int last = 0;
-        for (int i = 0; i < options.size(); i++) {
-            if (i == selected.get()) {
-                first = lines.size();
-                lines.addAll(selectedOptions.get(i));
-                last = lines.size() - 1;
-            } else {
-                lines.addAll(options.get(i));
+        // Scrolls by whole options, so an option is never cut in half
+        final int current = selected.get();
+        if (current < optionTop) {
+            optionTop = current;
+        }
+        while (optionTop < current && optionLines(optionTop, current + 1, current) > optionLineCount) {
+            optionTop++;
+        }
+        final List<Component> window = new ArrayList<>();
+        for (int i = optionTop; i < options.size(); i++) {
+            final List<Component> option = i == current ? selectedOptions.get(i) : options.get(i);
+            if (!window.isEmpty() && window.size() + option.size() > optionLineCount) {
+                break;
             }
+            window.addAll(option);
         }
-        if (first < optionTop) {
-            optionTop = first;
-        } else if (last >= optionTop + optionLineCount) {
-            optionTop = last - optionLineCount + 1;
+        while (window.size() > optionLineCount) {
+            window.remove(window.size() - 1);
         }
-        optionTop = Math.max(0, Math.min(optionTop, Math.max(0, lines.size() - optionLineCount)));
-        final List<Component> window = new ArrayList<>(lines.subList(optionTop, Math.min(lines.size(), optionTop + optionLineCount)));
         while (window.size() < optionLineCount) {
             window.add(Component.empty());
         }
         return window;
+    }
+
+    private int optionLines(final int from, final int until, final int current) {
+        int count = 0;
+        for (int i = from; i < until; i++) {
+            count += (i == current ? selectedOptions.get(i) : options.get(i)).size();
+        }
+        return count;
     }
 
     /**

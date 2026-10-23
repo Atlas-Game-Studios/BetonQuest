@@ -87,4 +87,13 @@ class HudDisplayTest {
         assertEquals(List.of("> A", "  B"), plain(display.screen().options()), "the window should scroll back up");
         assertFalse(display.hasNextPage(), "a short text should fit one page");
     }
+
+    @Test
+    void scrollsByWholeOptions() throws IOException {
+        final HudDisplay display = display(0, "Hi", List.of(Component.text("one two three four five"),
+                Component.text("B"), Component.text("C")));
+        assertFalse(plain(display.screen().options()).contains("  B"), "the long first option should fill the window alone");
+        display.moveSelection(true);
+        assertEquals(List.of("> B", "  C"), plain(display.screen().options()), "the long option should not be cut in half");
+    }
 }
